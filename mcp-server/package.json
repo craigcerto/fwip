@@ -1,0 +1,40 @@
+{
+  "name": "@fwip/mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server for Fwip prompt optimization — adapt_prompt, list_models, explain_adaptation tools",
+  "type": "module",
+  "main": "./dist/server.js",
+  "bin": {
+    "fwip-mcp-server": "./dist/server.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "prompt",
+    "optimization",
+    "fwip"
+  ],
+  "author": "Craig Certo",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/craigcerto/fwip.git",
+    "directory": "mcp-server"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "fwip": "file:../typescript"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
