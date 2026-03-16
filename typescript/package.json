@@ -1,0 +1,44 @@
+{
+  "name": "fwip",
+  "version": "0.1.0",
+  "description": "Model-specific prompt optimization. Your prompts, upgraded.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "prompt",
+    "optimization",
+    "llm",
+    "ai",
+    "adapter"
+  ],
+  "author": "Craig Certo",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/craigcerto/fwip.git",
+    "directory": "typescript"
+  },
+  "homepage": "https://fwip.ai",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}
