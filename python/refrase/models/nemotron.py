@@ -1,8 +1,8 @@
 """Nemotron model family adapter (9B, 12B VL, 30B)."""
 
-from fwip.helpers import add_json_reinforcement, simplify_prompt
-from fwip.models._base import BaseAdapter
-from fwip.types import Change, ModelFamily, ModelInfo, TaskType
+from refrase.helpers import add_json_reinforcement, simplify_prompt
+from refrase.models._base import BaseAdapter
+from refrase.types import Change, ModelFamily, ModelInfo, TaskType
 
 
 class NemotronAdapter(BaseAdapter):

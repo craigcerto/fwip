@@ -1,8 +1,8 @@
 """Kimi model family adapter (K2, K2.5)."""
 
-from fwip.helpers import add_english_enforcement, add_json_reinforcement
-from fwip.models._base import BaseAdapter
-from fwip.types import Change, ModelFamily, ModelInfo, TaskType
+from refrase.helpers import add_english_enforcement, add_json_reinforcement
+from refrase.models._base import BaseAdapter
+from refrase.types import Change, ModelFamily, ModelInfo, TaskType
 
 
 class KimiAdapter(BaseAdapter):

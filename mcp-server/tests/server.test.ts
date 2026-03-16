@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { adapt, listModels } from "fwip";
+import { adapt, listModels } from "refrase";
 
 // We test the core logic that the MCP server wraps, since testing
 // the actual MCP server requires stdio transport setup.

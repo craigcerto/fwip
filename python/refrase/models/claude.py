@@ -1,8 +1,8 @@
 """Claude model family adapter (Sonnet, Opus, Haiku)."""
 
-from fwip.helpers import simplify_prompt, wrap_xml
-from fwip.models._base import BaseAdapter
-from fwip.types import Change, ModelFamily, ModelInfo, TaskType
+from refrase.helpers import simplify_prompt, wrap_xml
+from refrase.models._base import BaseAdapter
+from refrase.types import Change, ModelFamily, ModelInfo, TaskType
 
 
 class ClaudeAdapter(BaseAdapter):

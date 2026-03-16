@@ -1,7 +1,7 @@
 """Gemini model family adapter (identity — prompts are already optimized for Gemini)."""
 
-from fwip.models._base import BaseAdapter
-from fwip.types import Change, ModelFamily, ModelInfo, TaskType
+from refrase.models._base import BaseAdapter
+from refrase.types import Change, ModelFamily, ModelInfo, TaskType
 
 
 class GeminiAdapter(BaseAdapter):

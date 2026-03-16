@@ -1,11 +1,11 @@
 {
-  "name": "@fwip/mcp-server",
+  "name": "@refrase/mcp-server",
   "version": "0.1.0",
-  "description": "MCP server for Fwip prompt optimization — adapt_prompt, list_models, explain_adaptation tools",
+  "description": "MCP server for Refrase prompt optimization — adapt_prompt, list_models, explain_adaptation tools",
   "type": "module",
   "main": "./dist/server.js",
   "bin": {
-    "fwip-mcp-server": "./dist/server.js"
+    "refrase-mcp-server": "./dist/server.js"
   },
   "files": [
     "dist"
@@ -20,7 +20,7 @@
     "model-context-protocol",
     "prompt",
     "optimization",
-    "fwip"
+    "refrase"
   ],
   "author": "Craig Certo",
   "license": "MIT",
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "fwip": "file:../typescript"
+    "refrase": "file:../typescript"
   },
   "devDependencies": {
     "typescript": "^5.7.0",

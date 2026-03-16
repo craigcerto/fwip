@@ -1,6 +1,6 @@
 """Tests for helper functions."""
 
-from fwip.helpers import (
+from refrase.helpers import (
     add_english_enforcement,
     add_json_reinforcement,
     simplify_prompt,

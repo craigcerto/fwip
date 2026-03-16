@@ -1,6 +1,6 @@
 """Model registry — maps human-readable model IDs to adapters."""
 
-from fwip.models import (
+from refrase.models import (
     ClaudeAdapter,
     DeepSeekAdapter,
     GeminiAdapter,
@@ -13,8 +13,8 @@ from fwip.models import (
     OpenAIAdapter,
     QwenAdapter,
 )
-from fwip.models._base import BaseAdapter
-from fwip.types import ModelFamily
+from refrase.models._base import BaseAdapter
+from refrase.types import ModelFamily
 
 # Model ID → (adapter_class, model_variant, model_family)
 _REGISTRY: dict[str, tuple[type[BaseAdapter], str, ModelFamily]] = {

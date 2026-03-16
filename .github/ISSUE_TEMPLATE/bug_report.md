@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a bug in the Fwip adapter library
+about: Report a bug in the Refrase adapter library
 title: "[Bug] "
 labels: bug
 ---
@@ -10,8 +10,8 @@ A clear description of the bug.
 
 ## Steps to Reproduce
 ```python
-import fwip
-result = fwip.adapt("...", "model-id", task="...")
+import refrase
+result = refrase.adapt("...", "model-id", task="...")
 ```
 
 ## Expected Behavior

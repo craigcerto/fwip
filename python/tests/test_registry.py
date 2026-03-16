@@ -2,9 +2,9 @@
 
 import pytest
 
-from fwip.registry import get_adapter, list_families, list_models
-from fwip.models._base import BaseAdapter
-from fwip.types import ModelFamily
+from refrase.registry import get_adapter, list_families, list_models
+from refrase.models._base import BaseAdapter
+from refrase.types import ModelFamily
 
 
 class TestGetAdapter:

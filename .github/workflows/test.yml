@@ -25,7 +25,7 @@ jobs:
       - name: Run tests
         run: |
           cd python
-          pytest tests/ -v --cov=fwip --cov-report=term-missing --cov-fail-under=90
+          pytest tests/ -v --cov=refrase --cov-report=term-missing --cov-fail-under=90
 
   typescript:
     runs-on: ubuntu-latest

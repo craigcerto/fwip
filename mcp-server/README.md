@@ -1,11 +1,11 @@
-# @fwip/mcp-server
+# @refrase/mcp-server
 
-MCP (Model Context Protocol) server for Fwip prompt optimization.
+MCP (Model Context Protocol) server for Refrase prompt optimization.
 
 ## Installation
 
 ```bash
-npm install -g @fwip/mcp-server
+npm install -g @refrase/mcp-server
 ```
 
 ## Configuration
@@ -15,8 +15,8 @@ Add to your MCP config (e.g., Claude Desktop, Cursor, etc.):
 ```json
 {
   "mcpServers": {
-    "fwip": {
-      "command": "fwip-mcp-server"
+    "refrase": {
+      "command": "refrase-mcp-server"
     }
   }
 }

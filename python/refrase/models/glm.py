@@ -1,12 +1,12 @@
 """GLM model family adapter (4.7, 4.7 Flash)."""
 
-from fwip.helpers import (
+from refrase.helpers import (
     add_english_enforcement,
     add_json_reinforcement,
     simplify_prompt,
 )
-from fwip.models._base import BaseAdapter
-from fwip.types import Change, ModelFamily, ModelInfo, TaskType
+from refrase.models._base import BaseAdapter
+from refrase.types import Change, ModelFamily, ModelInfo, TaskType
 
 
 class GLMAdapter(BaseAdapter):

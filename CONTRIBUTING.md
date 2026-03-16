@@ -1,17 +1,17 @@
-# Contributing to Fwip
+# Contributing to Refrase
 
-Thank you for your interest in contributing to Fwip! This guide explains how to add support for new model families.
+Thank you for your interest in contributing to Refrase! This guide explains how to add support for new model families.
 
 ## Adding a New Model Adapter (5 Steps)
 
 ### 1. Create the adapter file
 
-Create `python/fwip/models/yourmodel.py`:
+Create `python/refrase/models/yourmodel.py`:
 
 ```python
-from fwip.helpers import add_json_reinforcement
-from fwip.models._base import BaseAdapter
-from fwip.types import Change, ModelFamily, ModelInfo, TaskType
+from refrase.helpers import add_json_reinforcement
+from refrase.models._base import BaseAdapter
+from refrase.types import Change, ModelFamily, ModelInfo, TaskType
 
 
 class YourModelAdapter(BaseAdapter):
@@ -41,7 +41,7 @@ class YourModelAdapter(BaseAdapter):
 
 ### 2. Add to the ModelFamily enum
 
-In `python/fwip/types.py`, add your family:
+In `python/refrase/types.py`, add your family:
 
 ```python
 class ModelFamily(Enum):
@@ -51,10 +51,10 @@ class ModelFamily(Enum):
 
 ### 3. Register in the registry
 
-In `python/fwip/registry.py`, add entries:
+In `python/refrase/registry.py`, add entries:
 
 ```python
-from fwip.models.yourmodel import YourModelAdapter
+from refrase.models.yourmodel import YourModelAdapter
 
 _REGISTRY: dict[str, tuple[type[BaseAdapter], str, ModelFamily]] = {
     # ... existing entries ...
@@ -66,7 +66,7 @@ _REGISTRY: dict[str, tuple[type[BaseAdapter], str, ModelFamily]] = {
 ### 4. Add to models/__init__.py
 
 ```python
-from fwip.models.yourmodel import YourModelAdapter
+from refrase.models.yourmodel import YourModelAdapter
 ```
 
 ### 5. Write tests
@@ -74,15 +74,15 @@ from fwip.models.yourmodel import YourModelAdapter
 Create `python/tests/test_models/test_yourmodel.py`:
 
 ```python
-import fwip
+import refrase
 
 class TestYourModelAdapter:
     def test_basic_adaptation(self, sample_extraction_system):
-        result = fwip.adapt(sample_extraction_system, "yourmodel-large")
+        result = refrase.adapt(sample_extraction_system, "yourmodel-large")
         assert "JSON" in result.system  # or whatever your adapter does
 
     def test_changes_reported(self, sample_extraction_system):
-        result = fwip.adapt(sample_extraction_system, "yourmodel-large")
+        result = refrase.adapt(sample_extraction_system, "yourmodel-large")
         assert len(result.changes) > 0
 ```
 
@@ -96,7 +96,7 @@ Port the same adapter to `typescript/src/models/yourmodel.ts` with identical beh
 
 ```bash
 # Python
-cd python && pytest tests/ -v --cov=fwip
+cd python && pytest tests/ -v --cov=refrase
 
 # TypeScript
 cd typescript && npx vitest run --coverage

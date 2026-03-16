@@ -6,7 +6,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { adapt, listModels, type TaskType, type Change } from "fwip";
+import { adapt, listModels, type TaskType, type Change } from "refrase";
 
 const VALID_TASKS: TaskType[] = [
   "extraction",
@@ -18,7 +18,7 @@ const VALID_TASKS: TaskType[] = [
 
 const server = new Server(
   {
-    name: "fwip",
+    name: "refrase",
     version: "0.1.0",
   },
   {

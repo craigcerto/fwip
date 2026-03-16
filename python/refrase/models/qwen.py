@@ -1,12 +1,12 @@
 """Qwen3 model family adapter."""
 
-from fwip.helpers import (
+from refrase.helpers import (
     add_english_enforcement,
     add_json_reinforcement,
     simplify_prompt,
 )
-from fwip.models._base import BaseAdapter
-from fwip.types import Change, ModelFamily, ModelInfo, TaskType
+from refrase.models._base import BaseAdapter
+from refrase.types import Change, ModelFamily, ModelInfo, TaskType
 
 
 class QwenAdapter(BaseAdapter):

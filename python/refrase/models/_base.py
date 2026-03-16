@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from fwip.types import AdaptResult, Change, ModelFamily, ModelInfo, TaskType
+from refrase.types import AdaptResult, Change, ModelFamily, ModelInfo, TaskType
 
 
 class BaseAdapter(ABC):

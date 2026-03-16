@@ -2,8 +2,8 @@
 
 from typing import Optional
 
-from fwip.registry import get_adapter, list_models as _list_models
-from fwip.types import AdaptResult, TaskType
+from refrase.registry import get_adapter, list_models as _list_models
+from refrase.types import AdaptResult, TaskType
 
 
 def adapt(
@@ -30,7 +30,7 @@ def adapt(
         ValueError: If model ID is not found or task type is invalid.
 
     Examples:
-        >>> import fwip
+        >>> import refrase
         >>> result = fwip.adapt("You are a helpful assistant.", "claude-sonnet")
         >>> print(result.system)
         <role>

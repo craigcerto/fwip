@@ -1,18 +1,16 @@
-"""DeepSeek model family adapter (V3.x)."""
+"""MiniMax model family adapter (M2)."""
 
-from fwip.helpers import add_json_reinforcement
-from fwip.models._base import BaseAdapter
-from fwip.types import Change, ModelFamily, ModelInfo, TaskType
+from refrase.helpers import add_json_reinforcement
+from refrase.models._base import BaseAdapter
+from refrase.types import Change, ModelFamily, ModelInfo, TaskType
 
 
-class DeepSeekAdapter(BaseAdapter):
-    """Adapter for DeepSeek V3.x models.
+class MiniMaxAdapter(BaseAdapter):
+    """Adapter for MiniMax M2.
 
     Key adaptations:
-    - Keep numbered methodology steps (existing format works well)
-    - Be concise and direct
-    - Add self-check instructions
-    - Standard JSON guidance
+    - Contract-style prompts with success criteria
+    - Self-verification instructions
     """
 
     def adapt_system(
@@ -24,10 +22,10 @@ class DeepSeekAdapter(BaseAdapter):
         adapted = system
 
         adapted += (
-            "\n\nBefore your final answer, verify:\n"
-            "- All required fields are present in your response\n"
-            "- No fields contain placeholder or example values\n"
-            "- All data is extracted from the provided source material"
+            "\n\nBefore producing your final output, verify:\n"
+            "- All required fields are present and correctly typed\n"
+            "- No information has been fabricated or inferred beyond the source data\n"
+            "- Output is well-structured and internally consistent"
         )
 
         adapted = add_json_reinforcement(adapted)
@@ -38,8 +36,8 @@ class DeepSeekAdapter(BaseAdapter):
             Change(
                 rule="self-verification",
                 description="Added self-verification checklist",
-                evidence="DeepSeek models respond well to self-check instructions",
-                impact="Fewer missing fields and placeholder values",
+                evidence="MiniMax M2 responds well to contract-style verification",
+                impact="Fewer errors in structured output",
             ),
             Change(
                 rule="json-reinforcement",
@@ -51,11 +49,10 @@ class DeepSeekAdapter(BaseAdapter):
 
     def get_model_info(self) -> ModelInfo:
         return ModelInfo(
-            family=ModelFamily.DEEPSEEK,
-            description="DeepSeek V3.x models",
+            family=ModelFamily.MINIMAX,
+            description="MiniMax M2",
             adaptations=[
                 "Self-verification checklist",
                 "JSON reinforcement",
-                "Preserved methodology structure",
             ],
         )

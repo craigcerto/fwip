@@ -15,7 +15,7 @@ const VALID_TASKS: TaskType[] = [
  *
  * @example
  * ```ts
- * import { adapt } from "fwip";
+ * import { adapt } from "refrase";
  * const result = adapt({ prompt: "You are a helpful assistant.", model: "claude-sonnet" });
  * console.log(result.system);
  * ```

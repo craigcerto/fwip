@@ -1,11 +1,11 @@
 /**
- * Fwip — your prompts, upgraded.
+ * Refrase — your prompts, upgraded.
  *
  * Model-specific prompt optimization library.
  *
  * @example
  * ```ts
- * import { adapt, listModels } from "fwip";
+ * import { adapt, listModels } from "refrase";
  *
  * const result = adapt({ prompt: "You are a helpful assistant.", model: "claude-sonnet" });
  * console.log(result.system);

@@ -1,30 +1,30 @@
-# Fwip
+# Refrase
 
 **Your prompts, upgraded.**
 
-[![PyPI](https://img.shields.io/pypi/v/fwip)](https://pypi.org/project/fwip/)
-[![npm](https://img.shields.io/npm/v/fwip)](https://www.npmjs.com/package/fwip)
+[![PyPI](https://img.shields.io/pypi/v/refrase)](https://pypi.org/project/refrase/)
+[![npm](https://img.shields.io/npm/v/refrase)](https://www.npmjs.com/package/refrase)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://github.com/craigcerto/fwip/actions/workflows/test.yml/badge.svg)](https://github.com/craigcerto/fwip/actions/workflows/test.yml)
+[![Tests](https://github.com/craigcerto/refrase/actions/workflows/test.yml/badge.svg)](https://github.com/craigcerto/refrase/actions/workflows/test.yml)
 
-Fwip optimizes your AI prompts for specific models using research-backed, model-specific formatting rules. No LLM required — it's deterministic and instant.
+Refrase optimizes your AI prompts for specific models using research-backed, model-specific formatting rules. No LLM required — it's deterministic and instant.
 
 ## Why?
 
-Most developers write one prompt and hope it works on every model. But models were trained on different data with different RLHF processes. Claude works best with XML tags. Qwen3 needs `/think` prefixes. Mistral's Magistral emits `[TOOL_CALLS]` markers that break JSON parsing. Fwip handles all of this automatically.
+Most developers write one prompt and hope it works on every model. But models were trained on different data with different RLHF processes. Claude works best with XML tags. Qwen3 needs `/think` prefixes. Mistral's Magistral emits `[TOOL_CALLS]` markers that break JSON parsing. Refrase handles all of this automatically.
 
 ## Quick Start
 
 ### Python
 
 ```bash
-pip install fwip
+pip install refrase
 ```
 
 ```python
-import fwip
+import refrase
 
-result = fwip.adapt(
+result = refrase.adapt(
     "You are a helpful data analyst. Extract all key metrics from the report.",
     model="claude-sonnet",
     task="extraction",
@@ -50,11 +50,11 @@ print(result.changes)
 ### TypeScript
 
 ```bash
-npm install fwip
+npm install refrase
 ```
 
 ```typescript
-import { adapt } from "fwip";
+import { adapt } from "refrase";
 
 const result = adapt({
   prompt: "You are a helpful data analyst. Extract all key metrics.",
@@ -107,7 +107,7 @@ console.log(result.changes);
 ## MCP Server
 
 ```bash
-npm install -g @fwip/mcp-server
+npm install -g @refrase/mcp-server
 ```
 
 Add to your MCP config:
@@ -115,8 +115,8 @@ Add to your MCP config:
 ```json
 {
   "mcpServers": {
-    "fwip": {
-      "command": "fwip-mcp-server"
+    "refrase": {
+      "command": "refrase-mcp-server"
     }
   }
 }
@@ -128,7 +128,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for a 5-step guide to adding support for 
 
 ## Research
 
-Fwip's adaptation rules are derived from empirical testing across 46 model configurations on structured output tasks. Research paper coming soon.
+Refrase's adaptation rules are derived from empirical testing across 46 model configurations on structured output tasks. Research paper coming soon.
 
 ## License
 
