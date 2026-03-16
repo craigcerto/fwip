@@ -1,0 +1,109 @@
+{
+  "fixtures": {
+    "extraction_system": "Extract comprehensive data from the provided document.\n\nEXTRACTION PRINCIPLES:\n- Extract all information as stated in the document\n- Use schema field descriptions as guidance\n- Use null for optional fields not explicitly stated\n- Use empty arrays [] for list fields with no data\n- Convert dates to YYYY-MM-DD format when possible\n\nBe thorough - capture all information present in the document.",
+    "analysis_system": "You are an analyst evaluating document quality.\n\nMETHODOLOGY:\n\n1. EXTRACT ALL REQUIREMENTS\n   Parse the document and list EVERY requirement.\n\n2. ASSESS EACH REQUIREMENT\n   For EACH requirement: FULLY MET, PARTIALLY MET, or NOT MET.\n\n3. CREATE GAPS\n   For each NOT MET or PARTIALLY MET, create a gap.\n\n4. ASSIGN SEVERITY\n   Use the importance x coverage matrix.\n\n5. CALCULATE SCORE\n   Start at 100%, deduct per gap.\n\n6. GENERATE HIGHLIGHTS\n   Create a highlight for every requirement.\n\n7. IDENTIFY MATCHES\n   List all matched items.",
+    "generation_system": "You are generating professional content as structured JSON.\n\n## PHILOSOPHY\n- Maximize impact using strong language\n- Maintain 100% truthfulness\n\n## CONTENT OPTIMIZATION\n### 1. ACHIEVEMENT FORMULA\nPattern: \"Accomplished [X] measured by [Y] by doing [Z]\"\n\n### 2. QUANTIFICATION\nInclude metrics wherever possible.\n\n### 3. KEYWORD INTEGRATION\nNaturally incorporate relevant keywords.",
+    "user_prompt": "Analyze this document and extract all key information."
+  },
+  "expected": {
+    "claude-sonnet": {
+      "extraction": {
+        "system_contains": ["<role>", "</role>", "<instructions>", "</instructions>", "<output_format>"],
+        "system_not_contains": [],
+        "user_unchanged": true
+      },
+      "analysis": {
+        "system_contains": ["<role>", "<instructions>", "METHODOLOGY"],
+        "system_not_contains": [],
+        "user_unchanged": true
+      }
+    },
+    "claude-haiku": {
+      "extraction": {
+        "system_contains": ["<role>", "<instructions>"],
+        "system_not_contains": [],
+        "system_shorter_than": "claude-sonnet"
+      }
+    },
+    "qwen3-235b": {
+      "extraction": {
+        "system_starts_with": "/no_think",
+        "system_contains": ["English", "JSON"],
+        "user_starts_with": "/think"
+      },
+      "analysis": {
+        "system_starts_with": "/think",
+        "system_contains": ["English"],
+        "user_starts_with": "/think"
+      }
+    },
+    "qwen3-32b": {
+      "extraction": {
+        "system_starts_with": "/no_think",
+        "system_contains": ["ENTIRE response", "English"]
+      }
+    },
+    "deepseek-v3": {
+      "extraction": {
+        "system_contains": ["verify", "JSON"],
+        "system_not_contains": []
+      }
+    },
+    "mistral-large": {
+      "extraction": {
+        "system_contains": ["JSON"]
+      },
+      "analysis": {
+        "system_contains": ["methodically"]
+      }
+    },
+    "magistral-small": {
+      "extraction": {
+        "system_contains": ["[TOOL_CALLS]", "[THINK]", "Do NOT"]
+      }
+    },
+    "ministral-3b": {
+      "extraction": {
+        "system_contains": ["JSON"]
+      }
+    },
+    "kimi-k2": {
+      "extraction": {
+        "system_contains": ["fabricate", "English", "JSON"]
+      }
+    },
+    "glm-4.7": {
+      "extraction": {
+        "system_contains": ["nested", "English", "JSON"]
+      }
+    },
+    "glm-4.7-flash": {
+      "extraction": {
+        "system_contains": ["nested", "English"],
+        "system_shorter_than": "glm-4.7"
+      }
+    },
+    "nemotron-9b": {
+      "extraction": {
+        "system_contains": ["/think", "ENTIRE response"]
+      }
+    },
+    "nemotron-30b": {
+      "extraction": {
+        "system_contains": ["JSON"],
+        "system_not_contains": ["ENTIRE response"]
+      }
+    },
+    "minimax-m2": {
+      "extraction": {
+        "system_contains": ["verify", "JSON"]
+      }
+    },
+    "gemini-pro": {
+      "extraction": {
+        "system_unchanged": true,
+        "user_unchanged": true
+      }
+    }
+  }
+}

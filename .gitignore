@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.coverage
+.pytest_cache/
+htmlcov/
+*.egg
+.eggs/
+node_modules/
+coverage/
+.vitest/
+*.tsbuildinfo
+.next/

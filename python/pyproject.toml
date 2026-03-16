@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fwip"
+version = "0.1.0"
+description = "Model-specific prompt optimization. Your prompts, upgraded."
+readme = {file = "../README.md", content-type = "text/markdown"}
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "Craig Certo" },
+]
+keywords = ["prompt", "optimization", "llm", "ai", "adapter"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://fwip.ai"
+Documentation = "https://fwip.ai/docs/python"
+Repository = "https://github.com/craigcerto/fwip"
+Issues = "https://github.com/craigcerto/fwip/issues"
+Changelog = "https://github.com/craigcerto/fwip/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["fwip"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.coverage.run]
+source = ["fwip"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 90
