@@ -1,6 +1,10 @@
-# Refrase
+<p align="center">
+  <img src="assets/refrase-banner.png" alt="Refrase" width="400" />
+</p>
 
-**Your prompts, upgraded.**
+<h1 align="center">Refrase</h1>
+
+<p align="center"><strong>Your prompts, upgraded.</strong></p>
 
 [![PyPI](https://img.shields.io/pypi/v/refrase)](https://pypi.org/project/refrase/)
 [![npm](https://img.shields.io/npm/v/refrase)](https://www.npmjs.com/package/refrase)
