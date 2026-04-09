@@ -1,96 +1,177 @@
-import type { BaseAdapter } from "./models/base.js";
-import type { ModelEntry, ModelFamily } from "./types.js";
+/**
+ * Config-driven model registry.
+ *
+ * Loads all built-in family configs at import time and builds a lookup index.
+ * Supports runtime registration of custom models and families.
+ */
+import { CONFIGS } from "./configs/index.js";
+import type {
+  FamilyConfig,
+  FamilyInfo,
+  ModelConfig,
+  ModelEntry,
+  ModelRegistration,
+} from "./types.js";
 
-import { ClaudeAdapter } from "./models/claude.js";
-import { OpenAIAdapter } from "./models/openai.js";
-import { GeminiAdapter } from "./models/gemini.js";
-import { QwenAdapter } from "./models/qwen.js";
-import { DeepSeekAdapter } from "./models/deepseek.js";
-import { MistralAdapter } from "./models/mistral.js";
-import { LlamaAdapter } from "./models/llama.js";
-import { KimiAdapter } from "./models/kimi.js";
-import { GLMAdapter } from "./models/glm.js";
-import { NemotronAdapter } from "./models/nemotron.js";
-import { MiniMaxAdapter } from "./models/minimax.js";
+interface RegistryEntry {
+  familyConfig: FamilyConfig;
+  modelConfig: ModelConfig;
+  modelId: string;
+}
 
-type RegistryEntry = [new () => BaseAdapter, string, ModelFamily];
+const _registry: Map<string, RegistryEntry> = new Map();
+const _families: Map<string, FamilyConfig> = new Map();
 
-const REGISTRY: Record<string, RegistryEntry> = {
-  // Claude
-  "claude-sonnet": [ClaudeAdapter, "sonnet", "claude"],
-  "claude-opus": [ClaudeAdapter, "opus", "claude"],
-  "claude-haiku": [ClaudeAdapter, "haiku", "claude"],
-  // OpenAI
-  "gpt-4o": [OpenAIAdapter, "4o", "openai"],
-  "gpt-4o-mini": [OpenAIAdapter, "mini", "openai"],
-  "gpt-4": [OpenAIAdapter, "4", "openai"],
-  "o1": [OpenAIAdapter, "o1", "openai"],
-  "o1-mini": [OpenAIAdapter, "mini", "openai"],
-  "o3": [OpenAIAdapter, "o3", "openai"],
-  "o3-mini": [OpenAIAdapter, "mini", "openai"],
-  // Gemini
-  "gemini-pro": [GeminiAdapter, "pro", "gemini"],
-  "gemini-flash": [GeminiAdapter, "flash", "gemini"],
-  "gemini-ultra": [GeminiAdapter, "ultra", "gemini"],
-  // Qwen
-  "qwen3-235b": [QwenAdapter, "235b", "qwen"],
-  "qwen3-32b": [QwenAdapter, "32b", "qwen"],
-  "qwen3-32b-nothink": [QwenAdapter, "32b-nothink", "qwen"],
-  "qwen3-coder": [QwenAdapter, "coder", "qwen"],
-  // DeepSeek
-  "deepseek-v3": [DeepSeekAdapter, "v3", "deepseek"],
-  "deepseek-v3.1": [DeepSeekAdapter, "v3.1", "deepseek"],
-  "deepseek-v3.2": [DeepSeekAdapter, "v3.2", "deepseek"],
-  // Mistral
-  "mistral-large": [MistralAdapter, "large", "mistral"],
-  "magistral-small": [MistralAdapter, "magistral", "mistral"],
-  "devstral": [MistralAdapter, "devstral", "mistral"],
-  "ministral-14b": [MistralAdapter, "ministral-14b", "mistral"],
-  "ministral-8b": [MistralAdapter, "ministral-8b", "mistral"],
-  "ministral-3b": [MistralAdapter, "ministral-3b", "mistral"],
-  // Llama
-  "llama-3.1-405b": [LlamaAdapter, "405b", "llama"],
-  "llama-3.1-70b": [LlamaAdapter, "70b", "llama"],
-  "llama-3.1-8b": [LlamaAdapter, "8b", "llama"],
-  "llama-3.2-3b": [LlamaAdapter, "3b", "llama"],
-  // Kimi
-  "kimi-k2": [KimiAdapter, "k2", "kimi"],
-  "kimi-k2.5": [KimiAdapter, "k25", "kimi"],
-  // GLM
-  "glm-4.7": [GLMAdapter, "4.7", "glm"],
-  "glm-4.7-flash": [GLMAdapter, "flash", "glm"],
-  // Nemotron
-  "nemotron-30b": [NemotronAdapter, "30b", "nemotron"],
-  "nemotron-12b": [NemotronAdapter, "12b", "nemotron"],
-  "nemotron-9b": [NemotronAdapter, "9b", "nemotron"],
-  // MiniMax
-  "minimax-m2": [MiniMaxAdapter, "m2", "minimax"],
-};
+/** Initialize registry from built-in configs. */
+function _init(): void {
+  for (const config of Object.values(CONFIGS)) {
+    _registerFamilyInternal(config);
+  }
+}
 
-export function getAdapter(
-  modelId: string,
-): { adapter: BaseAdapter; variant: string; family: ModelFamily } {
-  const entry = REGISTRY[modelId];
+function _registerFamilyInternal(config: FamilyConfig): void {
+  _families.set(config.family, config);
+  for (const [modelId, modelCfg] of Object.entries(config.models)) {
+    const entry: RegistryEntry = {
+      familyConfig: config,
+      modelConfig: modelCfg,
+      modelId,
+    };
+    _registry.set(modelId, entry);
+    // Register aliases
+    for (const alias of modelCfg.aliases ?? []) {
+      _registry.set(alias, entry);
+    }
+  }
+}
+
+// Initialize on load
+_init();
+
+// ── Internal API ──
+
+/** Look up a registry entry by model ID. Throws if not found. */
+export function _getEntry(modelId: string): RegistryEntry {
+  const entry = _registry.get(modelId);
   if (!entry) {
-    const available = Object.keys(REGISTRY).sort().join(", ");
+    const available = [..._registry.keys()].sort().join(", ");
     throw new Error(
       `Unknown model: "${modelId}". Available models: ${available}`,
     );
   }
-  const [AdapterClass, variant, family] = entry;
-  return { adapter: new AdapterClass(), variant, family };
+  return entry;
 }
 
+// ── Public API ──
+
+/** List all registered models, sorted by ID. */
 export function listModels(): ModelEntry[] {
-  return Object.entries(REGISTRY)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([id, [, variant, family]]) => ({ id, family, variant }));
+  // Deduplicate aliases — only include canonical model IDs
+  const seen = new Set<string>();
+  const entries: ModelEntry[] = [];
+
+  for (const [id, entry] of _registry) {
+    // Skip aliases (where the registered ID differs from the canonical modelId)
+    if (id !== entry.modelId) continue;
+    if (seen.has(id)) continue;
+    seen.add(id);
+
+    entries.push({
+      id,
+      family: entry.familyConfig.family,
+      variant: entry.modelConfig.variant,
+      name: entry.modelConfig.name,
+      provider: entry.familyConfig.provider,
+    });
+  }
+
+  return entries.sort((a, b) => a.id.localeCompare(b.id));
 }
 
-export function listFamilies(): string[] {
-  const families = new Set<string>();
-  for (const [, [, , family]] of Object.entries(REGISTRY)) {
-    families.add(family);
+/** List all registered families with summary info. */
+export function listFamilies(): FamilyInfo[] {
+  const infos: FamilyInfo[] = [];
+  for (const config of _families.values()) {
+    infos.push({
+      family: config.family,
+      provider: config.provider,
+      docsUrl: config.docs_url,
+      modelCount: Object.keys(config.models).length,
+      ruleCount: config.rules.length,
+    });
   }
-  return [...families].sort();
+  return infos.sort((a, b) => a.family.localeCompare(b.family));
+}
+
+/** Get the full config for a specific model. */
+export function getModelConfig(
+  modelId: string,
+): ModelConfig & { family: string; provider: string; docsUrl?: string } {
+  const entry = _getEntry(modelId);
+  return {
+    ...entry.modelConfig,
+    family: entry.familyConfig.family,
+    provider: entry.familyConfig.provider,
+    docsUrl: entry.familyConfig.docs_url,
+  };
+}
+
+/** Get the full family config (returns a deep copy to prevent accidental mutation). */
+export function getFamilyConfig(family: string): FamilyConfig {
+  const config = _families.get(family);
+  if (!config) {
+    const available = [..._families.keys()].sort().join(", ");
+    throw new Error(
+      `Unknown family: "${family}". Available families: ${available}`,
+    );
+  }
+  return JSON.parse(JSON.stringify(config)) as FamilyConfig;
+}
+
+/**
+ * Register a custom model at runtime, associating it with an existing family.
+ * The model will inherit the family's rules and API hints.
+ */
+export function registerModel(
+  familyName: string,
+  modelId: string,
+  config: ModelRegistration,
+): void {
+  const familyConfig = _families.get(familyName);
+  if (!familyConfig) {
+    throw new Error(
+      `Cannot register model "${modelId}": unknown family "${familyName}". ` +
+        `Register the family first with registerFamily().`,
+    );
+  }
+
+  const modelConfig: ModelConfig = {
+    name: config.name,
+    variant: config.variant,
+    tier: config.tier,
+    aliases: config.aliases,
+  };
+
+  // Add to the family config's models
+  familyConfig.models[modelId] = modelConfig;
+
+  // Add to registry
+  const entry: RegistryEntry = {
+    familyConfig,
+    modelConfig,
+    modelId,
+  };
+  _registry.set(modelId, entry);
+
+  for (const alias of config.aliases ?? []) {
+    _registry.set(alias, entry);
+  }
+}
+
+/**
+ * Register a custom model family at runtime with its own rules.
+ * If the family already exists, it will be overwritten.
+ */
+export function registerFamily(config: FamilyConfig): void {
+  _registerFamilyInternal(config);
 }

@@ -1,0 +1,132 @@
+{
+  "family": "mistral",
+  "provider": "Mistral AI",
+  "docs_url": "https://docs.mistral.ai/guides/prompting-capabilities/",
+  "models": {
+    "mistral-large": { "name": "Mistral Large", "variant": "large", "tier": "flagship" },
+    "magistral-small": { "name": "Magistral Small", "variant": "magistral", "tier": "reasoning" },
+    "devstral": { "name": "Devstral", "variant": "devstral", "tier": "code" },
+    "ministral-14b": { "name": "Ministral 14B", "variant": "ministral-14b", "tier": "mid" },
+    "ministral-8b": { "name": "Ministral 8B", "variant": "ministral-8b", "tier": "fast" },
+    "ministral-3b": { "name": "Ministral 3B", "variant": "ministral-3b", "tier": "fast" }
+  },
+  "rules": [
+    {
+      "id": "mistral-large-methodical",
+      "transform": "markdown_structure",
+      "target": "system",
+      "category": "model_specific",
+      "description": "Added methodical analysis instruction for complex tasks",
+      "impact": "More thorough requirement-by-requirement analysis",
+      "when": { "variants": ["large"], "tasks": ["analysis", "code"] },
+      "params": {
+        "content": "IMPORTANT: Work through this analysis methodically. For each requirement, assess evidence before assigning a status."
+      },
+      "evidence": {
+        "source": "Mistral Large has no thinking mode — explicit step-by-step improves analysis"
+      }
+    },
+    {
+      "id": "mistral-large-json-reinforce",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["large", "ministral-14b"], "tasks": ["all"] },
+      "params": {
+        "tier": "standard"
+      },
+      "evidence": {
+        "source": "Explicit JSON instructions improve schema adherence"
+      }
+    },
+    {
+      "id": "mistral-magistral-suppress",
+      "transform": "suppress_markers",
+      "target": "system",
+      "category": "compensation",
+      "description": "Suppressed [TOOL_CALLS] and [THINK] output markers with strict JSON rules",
+      "impact": "Clean JSON output without extraneous markers",
+      "when": { "variants": ["magistral"], "tasks": ["all"] },
+      "params": {},
+      "evidence": {
+        "source": "Magistral emits reasoning/tool markers that break JSON parsing"
+      }
+    },
+    {
+      "id": "mistral-devstral-type-reinforce",
+      "transform": "type_reinforce",
+      "target": "system",
+      "category": "compensation",
+      "description": "Added explicit field type instructions",
+      "impact": "Correct field types in structured output",
+      "when": { "variants": ["devstral"], "tasks": ["all"] },
+      "params": {},
+      "evidence": {
+        "source": "Devstral has a known type coercion bug in tool args"
+      }
+    },
+    {
+      "id": "mistral-ministral-3b-simplify",
+      "transform": "simplify",
+      "target": "system",
+      "category": "compensation",
+      "description": "Simplified prompt for Ministral 3B capacity",
+      "impact": "Reduced prompt length while preserving key instructions",
+      "when": { "variants": ["ministral-3b"], "tasks": ["all"] },
+      "params": {
+        "max_steps": 3
+      },
+      "evidence": {
+        "source": "Ministral 3B has limited attention — concise prompts perform better"
+      }
+    },
+    {
+      "id": "mistral-ministral-8b-simplify",
+      "transform": "simplify",
+      "target": "system",
+      "category": "compensation",
+      "description": "Simplified prompt for Ministral 8B capacity",
+      "impact": "Reduced prompt length while preserving key instructions",
+      "when": { "variants": ["ministral-8b"], "tasks": ["all"] },
+      "params": {
+        "max_steps": 4
+      },
+      "evidence": {
+        "source": "Ministral 8B has limited attention — concise prompts perform better"
+      }
+    },
+    {
+      "id": "mistral-ministral-small-json-reinforce",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions for small Ministral models",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["ministral-3b", "ministral-8b"], "tasks": ["all"] },
+      "params": {
+        "tier": "standard"
+      },
+      "evidence": {
+        "source": "Small models need explicit JSON guidance"
+      }
+    },
+    {
+      "id": "mistral-ministral-3b-simplify-user",
+      "transform": "simplify",
+      "target": "user",
+      "category": "compensation",
+      "description": "Simplified user prompt for Ministral 3B capacity",
+      "impact": "Reduced user prompt length for small model",
+      "when": { "variants": ["ministral-3b"], "tasks": ["all"] },
+      "params": {
+        "max_steps": 3
+      },
+      "evidence": {
+        "source": "Ministral 3B has limited attention — concise prompts perform better"
+      }
+    }
+  ],
+  "api_hints": []
+}

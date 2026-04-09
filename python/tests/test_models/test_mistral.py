@@ -1,4 +1,4 @@
-"""Tests for Mistral adapter (Large, Magistral, Devstral, Ministral)."""
+"""Tests for Mistral adaptation (Large, Magistral, Devstral, Ministral)."""
 
 import refrase
 

@@ -1,0 +1,87 @@
+{
+  "family": "openai",
+  "provider": "OpenAI",
+  "docs_url": "https://platform.openai.com/docs/guides/prompt-engineering",
+  "models": {
+    "gpt-4o": { "name": "GPT-4o", "variant": "4o", "tier": "flagship" },
+    "gpt-4o-mini": { "name": "GPT-4o Mini", "variant": "mini", "tier": "fast" },
+    "gpt-4": { "name": "GPT-4", "variant": "4", "tier": "legacy" },
+    "o1": { "name": "o1", "variant": "o1", "tier": "reasoning" },
+    "o1-mini": { "name": "o1 Mini", "variant": "mini", "tier": "fast" },
+    "o3": { "name": "o3", "variant": "o3", "tier": "reasoning" },
+    "o3-mini": { "name": "o3 Mini", "variant": "mini", "tier": "fast" }
+  },
+  "rules": [
+    {
+      "id": "openai-simplify-mini",
+      "transform": "simplify",
+      "target": "system",
+      "category": "compensation",
+      "description": "Simplified prompt for smaller model capacity",
+      "impact": "Reduced prompt length while preserving key instructions",
+      "when": { "variants": ["mini"], "tasks": ["all"] },
+      "params": {
+        "max_steps": 5
+      },
+      "evidence": {
+        "source": "Mini models have limited capacity — concise prompts perform better"
+      }
+    },
+    {
+      "id": "openai-reasoning-hint",
+      "transform": "prepend_text",
+      "target": "system",
+      "category": "model_specific",
+      "description": "Added reasoning level hint for complex tasks",
+      "impact": "Higher quality analysis and code output",
+      "when": { "variants": ["all"], "tasks": ["analysis", "code"] },
+      "params": {
+        "content": "Reasoning: high\n"
+      },
+      "evidence": {
+        "source": "Prompt-level reasoning hint (note: for o-series models, use the reasoning_effort API parameter instead)",
+        "url": "https://developers.openai.com/api/docs/guides/reasoning"
+      }
+    },
+    {
+      "id": "openai-grounding",
+      "transform": "grounding",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added grounding rules to reduce hallucination",
+      "impact": "Reduced fabrication of unsupported details",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {},
+      "evidence": {
+        "source": "GPT models benefit from explicit grounding instructions"
+      }
+    },
+    {
+      "id": "openai-json-reinforce",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {
+        "tier": "standard"
+      },
+      "evidence": {
+        "source": "Explicit JSON instructions improve schema adherence"
+      }
+    }
+  ],
+  "api_hints": [
+    {
+      "parameter": "reasoning_effort",
+      "value": "medium",
+      "reason": "Controls internal reasoning depth for o-series models. Use 'high' for complex tasks, 'low' for simple extraction.",
+      "when": { "variants": ["o1", "o3"], "tasks": ["all"] },
+      "evidence": {
+        "source": "OpenAI Reasoning Best Practices",
+        "url": "https://developers.openai.com/api/docs/guides/reasoning-best-practices"
+      }
+    }
+  ]
+}

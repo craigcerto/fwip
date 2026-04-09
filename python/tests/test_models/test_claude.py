@@ -1,4 +1,4 @@
-"""Tests for Claude adapter."""
+"""Tests for Claude adaptation (config-driven)."""
 
 import refrase
 
@@ -37,9 +37,9 @@ class TestClaudeAdapter:
     def test_changes_include_xml(self, sample_extraction_system):
         result = refrase.adapt(sample_extraction_system, "claude-sonnet")
         rules = [c.rule for c in result.changes]
-        assert "xml-structure" in rules
+        assert "claude-xml-wrap" in rules
 
     def test_haiku_changes_include_simplification(self, sample_extraction_system):
         result = refrase.adapt(sample_extraction_system, "claude-haiku")
         rules = [c.rule for c in result.changes]
-        assert "simplification" in rules
+        assert "claude-xml-wrap-haiku" in rules

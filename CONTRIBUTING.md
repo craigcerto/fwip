@@ -1,110 +1,158 @@
 # Contributing to Refrase
 
-Thank you for your interest in contributing to Refrase! This guide explains how to add support for new model families.
+Thank you for your interest in contributing! Refrase uses a config-driven architecture — most contributions are just JSON edits.
 
-## Adding a New Model Adapter (5 Steps)
+## Adding a New Model (to an existing family)
 
-### 1. Create the adapter file
+**Time: 2 minutes. No code changes.**
 
-Create `python/refrase/models/yourmodel.py`:
+Edit the family's config JSON at `typescript/src/configs/{family}.json`:
 
-```python
-from refrase.helpers import add_json_reinforcement
-from refrase.models._base import BaseAdapter
-from refrase.types import Change, ModelFamily, ModelInfo, TaskType
-
-
-class YourModelAdapter(BaseAdapter):
-    def adapt_system(self, system: str, task: TaskType, model_variant: str = "") -> str:
-        adapted = system
-        # Apply your model-specific adaptations here
-        adapted = add_json_reinforcement(adapted)
-        return adapted
-
-    def get_changes(self, task: TaskType, model_variant: str = "") -> list[Change]:
-        return [
-            Change(
-                rule="your-rule-name",
-                description="What this adaptation does",
-                evidence="Why this helps (link to docs, benchmarks, etc.)",
-                impact="Expected improvement",
-            ),
-        ]
-
-    def get_model_info(self) -> ModelInfo:
-        return ModelInfo(
-            family=ModelFamily.YOURMODEL,  # Add to types.py first
-            description="Your Model Family description",
-            adaptations=["List of adaptations"],
-        )
-```
-
-### 2. Add to the ModelFamily enum
-
-In `python/refrase/types.py`, add your family:
-
-```python
-class ModelFamily(Enum):
-    # ... existing families ...
-    YOURMODEL = "yourmodel"
-```
-
-### 3. Register in the registry
-
-In `python/refrase/registry.py`, add entries:
-
-```python
-from refrase.models.yourmodel import YourModelAdapter
-
-_REGISTRY: dict[str, tuple[type[BaseAdapter], str, ModelFamily]] = {
-    # ... existing entries ...
-    "yourmodel-large": (YourModelAdapter, "large", ModelFamily.YOURMODEL),
-    "yourmodel-small": (YourModelAdapter, "small", ModelFamily.YOURMODEL),
+```json
+{
+  "models": {
+    "existing-model": { ... },
+    "your-new-model": {
+      "name": "Display Name",
+      "variant": "variant-id",
+      "tier": "flagship"
+    }
+  }
 }
 ```
 
-### 4. Add to models/__init__.py
+Then sync to Python: `./scripts/sync-configs.sh`
 
-```python
-from refrase.models.yourmodel import YourModelAdapter
+The new model inherits all family rules. Done.
+
+## Adding a New Model Family (3 steps)
+
+### 1. Create the config file
+
+Create `typescript/src/configs/yourfamily.json`:
+
+```json
+{
+  "family": "yourfamily",
+  "provider": "Provider Name",
+  "docs_url": "https://docs.provider.com/prompt-engineering",
+  "models": {
+    "yourmodel-large": { "name": "YourModel Large", "variant": "large", "tier": "flagship" },
+    "yourmodel-small": { "name": "YourModel Small", "variant": "small", "tier": "fast" }
+  },
+  "rules": [
+    {
+      "id": "yourfamily-json-reinforce",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": { "tier": "standard" },
+      "evidence": {
+        "source": "Explicit JSON instructions improve schema adherence"
+      }
+    }
+  ],
+  "api_hints": []
+}
 ```
 
-### 5. Write tests
+**Rule categories** (be honest):
+- `model_specific` — Documented by the provider (link to docs)
+- `best_practice` — General technique applied because it helps this model
+- `compensation` — Addresses a known model weakness
 
-Create `python/tests/test_models/test_yourmodel.py`:
+### 2. Register the config
 
-```python
-import refrase
+Add the import to `typescript/src/configs/index.ts`:
 
-class TestYourModelAdapter:
-    def test_basic_adaptation(self, sample_extraction_system):
-        result = refrase.adapt(sample_extraction_system, "yourmodel-large")
-        assert "JSON" in result.system  # or whatever your adapter does
+```typescript
+import yourfamily from "./yourfamily.json" with { type: "json" };
 
-    def test_changes_reported(self, sample_extraction_system):
-        result = refrase.adapt(sample_extraction_system, "yourmodel-large")
-        assert len(result.changes) > 0
+export const CONFIGS: Record<string, FamilyConfig> = {
+  // ... existing ...
+  yourfamily: yourfamily as unknown as FamilyConfig,
+};
 ```
 
-Also add entries to `python/tests/test_fixtures.json` for cross-language parity.
+Add `"yourfamily"` to the `ModelFamily` type in `typescript/src/types.ts`.
 
-### 6. Mirror in TypeScript
+### 3. Sync and test
 
-Port the same adapter to `typescript/src/models/yourmodel.ts` with identical behavior.
+```bash
+./scripts/sync-configs.sh     # Copy configs to Python package
+cd typescript && npm test      # TypeScript tests
+cd python && pytest            # Python tests
+```
+
+## Adding a New Transform
+
+If your model needs a prompt transformation that doesn't exist yet:
+
+1. Create `typescript/src/transforms/yourTransform.ts`:
+```typescript
+export function yourTransform(text: string, params: Record<string, unknown>): string {
+  // Pure function: takes text + params, returns transformed text
+  return text + "\n\nYour transformation here";
+}
+```
+
+2. Register in `typescript/src/transforms/index.ts`
+3. Port to `python/refrase/transforms/your_transform.py`
+4. Register in `python/refrase/transforms/__init__.py`
+5. Reference from your config: `"transform": "your_transform"`
+
+## Available Transforms
+
+| Transform | Purpose |
+|---|---|
+| `append_text` | Append text after prompt |
+| `prepend_text` | Prepend text before prompt |
+| `xml_wrap` | Claude-style XML structuring with role extraction |
+| `thinking_prefix` | `/think` or `/no_think` prefix (Qwen, Nemotron) |
+| `json_reinforce` | JSON compliance instructions (standard or strong) |
+| `simplify` | Reduce steps, strip examples for small models |
+| `grounding` | Anti-hallucination rules |
+| `self_verify` | Self-check verification checklist |
+| `language_enforce` | Output language enforcement |
+| `suppress_markers` | Suppress reasoning artifacts |
+| `type_reinforce` | Schema type enforcement |
+| `nested_object_fix` | Nested structure guidance |
+| `markdown_structure` | Markdown section prefixes |
+| `constraint_reorder` | Move constraints to optimal position |
+
+## Evidence Standards
+
+Every rule should have evidence. In order of strength:
+
+1. **Official docs** — URL to provider documentation + direct quote
+2. **Empirical** — Data from our benchmark or controlled testing
+3. **Community** — Known behavior from community experience
+
+Include a `url` wherever possible. Be specific enough to verify.
 
 ## Running Tests
 
 ```bash
+# TypeScript
+cd typescript && npm test
+
 # Python
 cd python && pytest tests/ -v --cov=refrase
 
-# TypeScript
-cd typescript && npx vitest run --coverage
+# Cross-language parity
+python tests/check-parity.py
+
+# Sync configs before testing
+./scripts/sync-configs.sh
 ```
 
 ## Guidelines
 
-- Keep adapters deterministic (no LLM calls)
-- Document the evidence for each adaptation rule
-- Ensure both Python and TypeScript produce identical output for the same inputs
+- Keep transforms deterministic (no LLM calls, no network)
+- Both Python and TypeScript must produce identical output for the same inputs
 - Target 90%+ test coverage
+- Every rule needs evidence — no fabricated citations
+- Use honest category labels

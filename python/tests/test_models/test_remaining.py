@@ -30,7 +30,7 @@ class TestGLMAdapter:
 
 
 class TestNemotronAdapter:
-    def test_9b_tier3(self, sample_extraction_system):
+    def test_9b_strong_json(self, sample_extraction_system):
         result = refrase.adapt(sample_extraction_system, "nemotron-9b")
         assert "ENTIRE response" in result.system
 
@@ -38,7 +38,7 @@ class TestNemotronAdapter:
         result = refrase.adapt(sample_extraction_system, "nemotron-9b")
         assert "/think" in result.system
 
-    def test_30b_no_tier3(self, sample_extraction_system):
+    def test_30b_no_strong_json(self, sample_extraction_system):
         result = refrase.adapt(sample_extraction_system, "nemotron-30b")
         assert "ENTIRE response" not in result.system
 

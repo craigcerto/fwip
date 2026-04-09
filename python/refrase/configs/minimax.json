@@ -1,0 +1,41 @@
+{
+  "family": "minimax",
+  "provider": "MiniMax",
+  "docs_url": "https://platform.minimaxi.com/document/introduction",
+  "models": {
+    "minimax-m2": { "name": "MiniMax M2", "variant": "m2", "tier": "flagship" }
+  },
+  "rules": [
+    {
+      "id": "minimax-self-verify",
+      "transform": "self_verify",
+      "target": "system",
+      "category": "compensation",
+      "description": "Added self-verification checklist",
+      "impact": "Fewer errors in structured output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {
+        "style": "minimax"
+      },
+      "evidence": {
+        "source": "MiniMax M2 responds well to contract-style verification"
+      }
+    },
+    {
+      "id": "minimax-json-reinforce",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {
+        "tier": "standard"
+      },
+      "evidence": {
+        "source": "Explicit JSON instructions improve schema adherence"
+      }
+    }
+  ],
+  "api_hints": []
+}

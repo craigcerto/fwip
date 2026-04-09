@@ -1,0 +1,57 @@
+{
+  "family": "llama",
+  "provider": "Meta",
+  "docs_url": "https://llama.meta.com/docs/",
+  "models": {
+    "llama-3.1-405b": { "name": "Llama 3.1 405B", "variant": "405b", "tier": "flagship" },
+    "llama-3.1-70b": { "name": "Llama 3.1 70B", "variant": "70b", "tier": "mid" },
+    "llama-3.1-8b": { "name": "Llama 3.1 8B", "variant": "8b", "tier": "fast" },
+    "llama-3.2-3b": { "name": "Llama 3.2 3B", "variant": "3b", "tier": "fast" }
+  },
+  "rules": [
+    {
+      "id": "llama-simplify-small",
+      "transform": "simplify",
+      "target": "system",
+      "category": "compensation",
+      "description": "Simplified prompt for smaller model capacity",
+      "impact": "Reduced prompt length while preserving key instructions",
+      "when": { "variants": ["8b", "3b"], "tasks": ["all"] },
+      "params": {
+        "max_steps": 5
+      },
+      "evidence": {
+        "source": "Small Llama models perform better with concise prompts"
+      }
+    },
+    {
+      "id": "llama-grounding",
+      "transform": "grounding",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added grounding rules to reduce hallucination",
+      "impact": "Reduced fabrication of unsupported details",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {},
+      "evidence": {
+        "source": "Llama models benefit from explicit grounding instructions"
+      }
+    },
+    {
+      "id": "llama-json-reinforce",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {
+        "tier": "standard"
+      },
+      "evidence": {
+        "source": "Explicit JSON instructions improve schema adherence"
+      }
+    }
+  ],
+  "api_hints": []
+}

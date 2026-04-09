@@ -1,0 +1,24 @@
+{
+  "family": "gemini",
+  "provider": "Google",
+  "docs_url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+  "models": {
+    "gemini-pro": { "name": "Gemini 2.5 Pro", "variant": "pro", "tier": "flagship" },
+    "gemini-flash": { "name": "Gemini 2.5 Flash", "variant": "flash", "tier": "fast" },
+    "gemini-ultra": { "name": "Gemini Ultra", "variant": "ultra", "tier": "premium" }
+  },
+  "rules": [],
+  "api_hints": [
+    {
+      "parameter": "temperature",
+      "value": 1.0,
+      "reason": "Gemini 3 models degrade with temperature below 1.0 — may cause looping or unexpected behavior",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "evidence": {
+        "source": "Gemini 3 Developer Guide",
+        "url": "https://ai.google.dev/gemini-api/docs/gemini-3",
+        "quote": "We strongly recommend keeping the temperature parameter at its default value of 1.0."
+      }
+    }
+  ]
+}

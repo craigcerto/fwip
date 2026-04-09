@@ -1,5 +1,5 @@
-import { getAdapter, listModels as _listModels } from "./registry.js";
-import { runAdapt } from "./models/base.js";
+import { _getEntry, listModels as _listModels } from "./registry.js";
+import { applyRules } from "./engine.js";
 import type { AdaptOptions, AdaptResult, ModelEntry, TaskType } from "./types.js";
 
 const VALID_TASKS: TaskType[] = [
@@ -29,9 +29,16 @@ export function adapt(options: AdaptOptions): AdaptResult {
     );
   }
 
-  const { adapter, variant } = getAdapter(model);
+  const entry = _getEntry(model);
 
-  return runAdapt(adapter, prompt, task, model, variant, userPrompt);
+  return applyRules(
+    entry.familyConfig,
+    model,
+    entry.modelConfig.variant,
+    task,
+    prompt,
+    userPrompt,
+  );
 }
 
 /** List all supported models. */

@@ -1,0 +1,124 @@
+{
+  "family": "nemotron",
+  "provider": "NVIDIA",
+  "docs_url": "https://build.nvidia.com/nvidia/llama-3_1-nemotron-ultra-253b-v1",
+  "models": {
+    "nemotron-30b": { "name": "Nemotron 30B", "variant": "30b", "tier": "flagship" },
+    "nemotron-12b": { "name": "Nemotron 12B", "variant": "12b", "tier": "mid" },
+    "nemotron-9b": { "name": "Nemotron 9B", "variant": "9b", "tier": "fast" }
+  },
+  "rules": [
+    {
+      "id": "nemotron-thinking-prefix-system",
+      "transform": "thinking_prefix",
+      "target": "system",
+      "category": "model_specific",
+      "description": "Added /think or /no_think prefix for small Nemotron models",
+      "impact": "Optimized reasoning mode",
+      "when": { "variants": ["9b", "12b"], "tasks": ["all"] },
+      "params": {
+        "variant_override": {
+          "nothink": "/no_think\n"
+        },
+        "task_map": {
+          "default": "/think\n"
+        }
+      },
+      "evidence": {
+        "source": "Nemotron 9B/12B support /think and /no_think toggles"
+      }
+    },
+    {
+      "id": "nemotron-simplify-small",
+      "transform": "simplify",
+      "target": "system",
+      "category": "compensation",
+      "description": "Simplified prompt for small model capacity",
+      "impact": "Reduced prompt length",
+      "when": { "variants": ["9b", "12b"], "tasks": ["all"] },
+      "params": {
+        "max_steps": 3
+      },
+      "evidence": {
+        "source": "9B/12B have limited attention layers"
+      }
+    },
+    {
+      "id": "nemotron-json-reinforce-strong",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added extra-strong JSON-only instructions for small models",
+      "impact": "Improved schema compliance",
+      "when": { "variants": ["9b", "12b"], "tasks": ["all"] },
+      "params": {
+        "tier": "strong"
+      },
+      "evidence": {
+        "source": "9B/12B use JSON-prompt fallback (Tier 3)"
+      }
+    },
+    {
+      "id": "nemotron-json-reinforce-standard",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["30b"], "tasks": ["all"] },
+      "params": {
+        "tier": "standard"
+      },
+      "evidence": {
+        "source": "Explicit JSON instructions improve schema adherence"
+      }
+    },
+    {
+      "id": "nemotron-thinking-prefix-user",
+      "transform": "thinking_prefix",
+      "target": "user",
+      "category": "model_specific",
+      "description": "Added /think or /no_think prefix to user prompt for small models",
+      "impact": "Consistent reasoning mode across system and user prompts",
+      "when": { "variants": ["9b", "12b"], "tasks": ["all"] },
+      "params": {
+        "variant_override": {
+          "nothink": "/no_think\n"
+        },
+        "task_map": {
+          "default": "/think\n"
+        }
+      },
+      "evidence": {
+        "source": "Nemotron 9B/12B support /think and /no_think toggles"
+      }
+    },
+    {
+      "id": "nemotron-simplify-user",
+      "transform": "simplify",
+      "target": "user",
+      "category": "compensation",
+      "description": "Simplified user prompt for small model capacity",
+      "impact": "Reduced user prompt length for small model",
+      "when": { "variants": ["9b", "12b"], "tasks": ["all"] },
+      "params": {
+        "max_steps": 3
+      },
+      "evidence": {
+        "source": "9B/12B have limited attention layers"
+      }
+    }
+  ],
+  "api_hints": [
+    {
+      "parameter": "reasoning_budget",
+      "value": 512,
+      "reason": "Configurable thinking budget caps thinking tokens for predictable latency and cost",
+      "when": { "variants": ["9b", "12b"], "tasks": ["all"] },
+      "evidence": {
+        "source": "Nemotron-3-Nano Model Card",
+        "url": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16"
+      }
+    }
+  ]
+}

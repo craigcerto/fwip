@@ -1,0 +1,57 @@
+{
+  "family": "claude",
+  "provider": "Anthropic",
+  "docs_url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering",
+  "models": {
+    "claude-sonnet": { "name": "Claude Sonnet 4.6", "variant": "sonnet", "tier": "flagship" },
+    "claude-opus": { "name": "Claude Opus 4.6", "variant": "opus", "tier": "premium" },
+    "claude-haiku": { "name": "Claude Haiku 4.5", "variant": "haiku", "tier": "fast" }
+  },
+  "rules": [
+    {
+      "id": "claude-xml-wrap",
+      "transform": "xml_wrap",
+      "target": "system",
+      "category": "model_specific",
+      "description": "Restructured prompt with XML tags and extracted role definition",
+      "impact": "Improved instruction following and section separation",
+      "when": { "variants": ["sonnet", "opus"], "tasks": ["all"] },
+      "params": {
+        "extract_role": true
+      },
+      "evidence": {
+        "source": "Claude models are trained to follow XML-tagged instructions",
+        "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags",
+        "quote": "Use XML tags to structure your prompts — Claude is particularly well-suited to working with XML tags."
+      }
+    },
+    {
+      "id": "claude-xml-wrap-haiku",
+      "transform": "xml_wrap",
+      "target": "system",
+      "category": "model_specific",
+      "description": "Restructured prompt with XML tags, role extraction, and body simplification for Haiku",
+      "impact": "Reduced prompt length while preserving key instructions via XML structure",
+      "when": { "variants": ["haiku"], "tasks": ["all"] },
+      "params": {
+        "extract_role": true,
+        "simplify_body": true,
+        "simplify_max_steps": 5
+      },
+      "evidence": {
+        "source": "Haiku has fewer parameters — concise prompts perform better"
+      }
+    }
+  ],
+  "api_hints": [
+    {
+      "parameter": "max_tokens",
+      "value": 8192,
+      "reason": "Claude requires explicit max_tokens — there is no default",
+      "evidence": {
+        "source": "Anthropic API Reference",
+        "url": "https://docs.anthropic.com/en/api/messages"
+      }
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-"""Tests for DeepSeek adapter."""
+"""Tests for DeepSeek adaptation (config-driven)."""
 
 import refrase
 

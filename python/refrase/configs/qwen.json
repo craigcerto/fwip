@@ -1,0 +1,136 @@
+{
+  "family": "qwen",
+  "provider": "Alibaba",
+  "docs_url": "https://qwen.readthedocs.io/en/latest/",
+  "models": {
+    "qwen3-235b": { "name": "Qwen3 235B", "variant": "235b", "tier": "flagship" },
+    "qwen3-32b": { "name": "Qwen3 32B", "variant": "32b", "tier": "mid" },
+    "qwen3-32b-nothink": { "name": "Qwen3 32B (No Think)", "variant": "32b-nothink", "tier": "mid" },
+    "qwen3-coder": { "name": "Qwen3 Coder", "variant": "coder", "tier": "code" }
+  },
+  "rules": [
+    {
+      "id": "qwen-thinking-prefix-system",
+      "transform": "thinking_prefix",
+      "target": "system",
+      "category": "model_specific",
+      "description": "Added /think or /no_think prefix based on variant and task",
+      "impact": "Optimized reasoning mode for task type",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {
+        "variant_override": {
+          "nothink": "/no_think\n",
+          "think": "/think\n"
+        },
+        "task_map": {
+          "extraction": "/no_think\n",
+          "default": "/think\n"
+        }
+      },
+      "evidence": {
+        "source": "Qwen3 supports /think and /no_think reasoning toggles"
+      }
+    },
+    {
+      "id": "qwen-json-reinforce-strong",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added extra-strong JSON-only instructions for 32B variants",
+      "impact": "Dramatically improved schema compliance",
+      "when": { "variants": ["32b", "32b-nothink"], "tasks": ["all"] },
+      "params": {
+        "tier": "strong"
+      },
+      "evidence": {
+        "source": "32B variant uses JSON-prompt fallback (Tier 3)"
+      }
+    },
+    {
+      "id": "qwen-simplify-32b",
+      "transform": "simplify",
+      "target": "system",
+      "category": "compensation",
+      "description": "Simplified prompt for 32B model capacity",
+      "impact": "Reduced prompt length while preserving key instructions",
+      "when": { "variants": ["32b", "32b-nothink"], "tasks": ["all"] },
+      "params": {
+        "max_steps": 5
+      },
+      "evidence": {
+        "source": "32B models perform better with concise prompts"
+      }
+    },
+    {
+      "id": "qwen-json-reinforce-standard",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["235b", "coder"], "tasks": ["all"] },
+      "params": {
+        "tier": "standard"
+      },
+      "evidence": {
+        "source": "Explicit JSON instructions improve schema adherence"
+      }
+    },
+    {
+      "id": "qwen-language-enforce",
+      "transform": "language_enforce",
+      "target": "system",
+      "category": "compensation",
+      "description": "Added English-only output instruction",
+      "impact": "Consistent English output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {},
+      "evidence": {
+        "source": "Qwen3 is natively multilingual — may respond in Chinese"
+      }
+    },
+    {
+      "id": "qwen-thinking-prefix-user",
+      "transform": "thinking_prefix",
+      "target": "user",
+      "category": "model_specific",
+      "description": "Added /think or /no_think prefix to user prompt",
+      "impact": "Consistent reasoning mode across system and user prompts",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {
+        "variant_override": {
+          "nothink": "/no_think\n"
+        },
+        "task_map": {
+          "default": "/think\n"
+        }
+      },
+      "evidence": {
+        "source": "Qwen3 supports /think and /no_think reasoning toggles"
+      }
+    }
+  ],
+  "api_hints": [
+    {
+      "parameter": "temperature",
+      "value": 0.6,
+      "reason": "Qwen3 mandates non-greedy sampling — greedy decoding causes performance degradation and endless repetitions",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "evidence": {
+        "source": "Qwen3 Model Card",
+        "url": "https://huggingface.co/Qwen/Qwen3-32B",
+        "quote": "DO NOT use greedy decoding, as it can lead to performance degradation and endless repetitions."
+      }
+    },
+    {
+      "parameter": "top_p",
+      "value": 0.95,
+      "reason": "Recommended sampling parameter for Qwen3 thinking mode",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "evidence": {
+        "source": "Qwen3 Blog",
+        "url": "https://qwenlm.github.io/blog/qwen3/"
+      }
+    }
+  ]
+}

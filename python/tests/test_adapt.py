@@ -56,6 +56,16 @@ class TestAdaptBasic:
             result = refrase.adapt(sample_extraction_system, "claude-sonnet", task=task)
             assert isinstance(result, AdaptResult)
 
+    def test_api_hints_present(self, sample_extraction_system):
+        result = refrase.adapt(sample_extraction_system, "claude-sonnet")
+        assert result.api_hints is not None
+        assert len(result.api_hints) > 0
+
+    def test_change_has_category(self, sample_extraction_system):
+        result = refrase.adapt(sample_extraction_system, "deepseek-v3")
+        for change in result.changes:
+            assert change.category is not None
+
 
 class TestListModels:
     def test_returns_list(self):

@@ -1,0 +1,68 @@
+{
+  "family": "glm",
+  "provider": "Z.AI",
+  "docs_url": "https://open.bigmodel.cn/dev/howuse/introduction",
+  "models": {
+    "glm-4.7": { "name": "GLM-4.7", "variant": "4.7", "tier": "flagship" },
+    "glm-4.7-flash": { "name": "GLM-4.7 Flash", "variant": "flash", "tier": "fast" }
+  },
+  "rules": [
+    {
+      "id": "glm-simplify-flash",
+      "transform": "simplify",
+      "target": "system",
+      "category": "compensation",
+      "description": "Simplified prompt for Flash variant",
+      "impact": "Reduced prompt length while preserving key instructions",
+      "when": { "variants": ["flash"], "tasks": ["all"] },
+      "params": {
+        "max_steps": 5
+      },
+      "evidence": {
+        "source": "GLM Flash is smaller — concise prompts perform better"
+      }
+    },
+    {
+      "id": "glm-nested-object-fix",
+      "transform": "nested_object_fix",
+      "target": "system",
+      "category": "compensation",
+      "description": "Added nested object structure reinforcement",
+      "impact": "Correct nested object and array structure",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {},
+      "evidence": {
+        "source": "GLM has a known nested object serialization bug"
+      }
+    },
+    {
+      "id": "glm-json-reinforce",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {
+        "tier": "standard"
+      },
+      "evidence": {
+        "source": "Explicit JSON instructions improve schema adherence"
+      }
+    },
+    {
+      "id": "glm-language-enforce",
+      "transform": "language_enforce",
+      "target": "system",
+      "category": "compensation",
+      "description": "Added English-only output instruction",
+      "impact": "Consistent English output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {},
+      "evidence": {
+        "source": "GLM is natively bilingual Chinese/English"
+      }
+    }
+  ],
+  "api_hints": []
+}

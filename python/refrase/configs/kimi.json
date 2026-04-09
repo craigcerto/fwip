@@ -1,0 +1,65 @@
+{
+  "family": "kimi",
+  "provider": "Moonshot AI",
+  "docs_url": "https://platform.moonshot.cn/docs/",
+  "models": {
+    "kimi-k2": { "name": "Kimi K2", "variant": "k2", "tier": "flagship" },
+    "kimi-k2.5": { "name": "Kimi K2.5", "variant": "k25", "tier": "flagship" }
+  },
+  "rules": [
+    {
+      "id": "kimi-k2-grounding",
+      "transform": "append_text",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added source material grounding instruction for K2",
+      "impact": "Output grounded in provided data",
+      "when": { "variants": ["k2"], "tasks": ["all"] },
+      "params": {
+        "content": "Reference only the provided source material. Do NOT fabricate information not present in the input data."
+      },
+      "evidence": {
+        "source": "K2 Thinking always reasons — explicit grounding reduces hallucination"
+      }
+    },
+    {
+      "id": "kimi-json-reinforce",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {
+        "tier": "standard"
+      },
+      "evidence": {
+        "source": "Explicit JSON instructions improve schema adherence"
+      }
+    },
+    {
+      "id": "kimi-language-enforce",
+      "transform": "language_enforce",
+      "target": "system",
+      "category": "compensation",
+      "description": "Added English-only output instruction",
+      "impact": "Consistent English output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {},
+      "evidence": {
+        "source": "Kimi is multilingual — may respond in Chinese"
+      }
+    }
+  ],
+  "api_hints": [
+    {
+      "parameter": "temperature",
+      "value": 0.6,
+      "reason": "Kimi K2 was trained with Muon optimizer — temperature 0.6 is the documented optimum",
+      "evidence": {
+        "source": "Kimi K2 GitHub README",
+        "url": "https://github.com/MoonshotAI/Kimi-K2"
+      }
+    }
+  ]
+}

@@ -48,12 +48,12 @@ describe("ClaudeAdapter", () => {
   it("changes include xml-structure", () => {
     const result = adapt({ prompt: extraction, model: "claude-sonnet" });
     const rules = result.changes.map((c) => c.rule);
-    expect(rules).toContain("xml-structure");
+    expect(rules).toContain("claude-xml-wrap");
   });
 
   it("haiku changes include simplification", () => {
     const result = adapt({ prompt: extraction, model: "claude-haiku" });
     const rules = result.changes.map((c) => c.rule);
-    expect(rules).toContain("simplification");
+    expect(rules).toContain("claude-xml-wrap-haiku");
   });
 });

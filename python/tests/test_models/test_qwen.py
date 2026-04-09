@@ -1,4 +1,4 @@
-"""Tests for Qwen adapter."""
+"""Tests for Qwen adaptation (config-driven)."""
 
 import refrase
 
@@ -12,7 +12,7 @@ class TestQwenAdapter:
         result = refrase.adapt(sample_analysis_system, "qwen3-235b", task="analysis")
         assert result.system.startswith("/think")
 
-    def test_32b_tier3(self, sample_extraction_system):
+    def test_32b_strong_json(self, sample_extraction_system):
         result = refrase.adapt(sample_extraction_system, "qwen3-32b", task="extraction")
         assert "ENTIRE response" in result.system
 

@@ -1,0 +1,45 @@
+{
+  "family": "deepseek",
+  "provider": "DeepSeek",
+  "docs_url": "https://api-docs.deepseek.com/",
+  "models": {
+    "deepseek-v3": { "name": "DeepSeek V3", "variant": "v3", "tier": "flagship" },
+    "deepseek-v3.1": { "name": "DeepSeek V3.1", "variant": "v3.1", "tier": "flagship" },
+    "deepseek-v3.2": { "name": "DeepSeek V3.2", "variant": "v3.2", "tier": "flagship" }
+  },
+  "rules": [
+    {
+      "id": "deepseek-self-verify",
+      "transform": "self_verify",
+      "target": "system",
+      "category": "compensation",
+      "description": "Added self-verification checklist",
+      "impact": "Fewer missing fields and placeholder values",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {
+        "style": "deepseek"
+      },
+      "evidence": {
+        "source": "DeepSeek models tend to drop required fields without explicit verification",
+        "url": "https://api-docs.deepseek.com/guides/json_mode",
+        "finding": "JSON mode requires the word 'json' in the prompt. API may occasionally return empty content."
+      }
+    },
+    {
+      "id": "deepseek-json-reinforce",
+      "transform": "json_reinforce",
+      "target": "system",
+      "category": "best_practice",
+      "description": "Added JSON output compliance instructions",
+      "impact": "More reliable structured output",
+      "when": { "variants": ["all"], "tasks": ["all"] },
+      "params": {
+        "tier": "standard"
+      },
+      "evidence": {
+        "source": "Explicit JSON instructions improve schema adherence"
+      }
+    }
+  ],
+  "api_hints": []
+}
