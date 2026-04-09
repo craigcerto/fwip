@@ -1,4 +1,8 @@
-<h1 align="center">refrase</h1>
+<p align="center">
+  <img src="assets/refrase-banner.png" alt="Refrase" width="280" />
+</p>
+
+<h1 align="center">Refrase</h1>
 
 <p align="center"><strong>Research-backed prompt optimization for every model.</strong></p>
 
