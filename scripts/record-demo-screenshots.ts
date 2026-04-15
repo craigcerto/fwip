@@ -57,7 +57,8 @@ async function main() {
 
   // Switch models
   console.log("Switching models...");
-  for (const tabName of ["GPT-4o", "Gemini Pro", "Llama 3.1", "Claude Sonnet"]) {
+  // Skip Gemini — it's a no-op, shows identical input/output (terrible demo)
+  for (const tabName of ["GPT-4o", "Llama 3.1", "Claude Sonnet"]) {
     const tab = page.locator(`button:has-text("${tabName}")`).first();
     try {
       await tab.click({ timeout: 3000 });
