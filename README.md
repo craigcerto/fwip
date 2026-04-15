@@ -28,8 +28,11 @@
 
 ---
 
-<!-- GIF demo goes here when ready -->
-<!-- <p align="center"><img src="assets/demo.gif" alt="Refrase demo" width="700" /></p> -->
+<p align="center">
+  <a href="https://refrase.cc/adapt">
+    <img src="assets/demo.gif" alt="Refrase — watch a prompt get optimized for Claude Sonnet, then switch between GPT-4o, Gemini Pro, and Llama" width="700" />
+  </a>
+</p>
 
 ## What is Refrase?
 
