@@ -21,7 +21,8 @@ async function main() {
   // Crop coordinates — tabs + prompt cards area
   // Based on 1280px wide viewport with the hero section
   // Tabs start at ~y=590, cards go to ~y=1040
-  const clip = { x: 100, y: 570, width: 1080, height: 620 };
+  // Tabs row + prompt cards + footer. No heading above, no next section below.
+  const clip = { x: 100, y: 595, width: 1080, height: 480 };
 
   let frameNum = 0;
   const captureFrame = async () => {
