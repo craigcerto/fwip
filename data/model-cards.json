@@ -1,0 +1,1502 @@
+{
+  "models": [
+    {
+      "id": "claude-opus",
+      "name": "Claude Opus 4.6",
+      "provider": "Anthropic",
+      "family": "claude",
+      "official_url": "https://platform.claude.com/docs/en/about-claude/models/overview",
+      "model_card_url": "https://www.anthropic.com/claude-opus-4-6-system-card",
+      "release_date": "2026-02-01",
+      "context_window": 1000000,
+      "max_output_tokens": 128000,
+      "pricing": {
+        "input_per_1m": 5.0,
+        "output_per_1m": 25.0,
+        "notes": "Batch API: $2.50/$12.50 per MTok (50% discount). Prompt caching: 5-min write 1.25x, 1-hour write 2x, cache hit 0.1x base input. Fast mode (research preview): $30/$150 per MTok (6x). US-only data residency adds 1.1x multiplier. (source: Anthropic docs, Pricing)"
+      },
+      "key_capabilities": [
+        "Most intelligent model for building agents and coding, with exceptional long-horizon reasoning and state tracking across extended sessions (source: Anthropic docs, Models Overview)",
+        "1M token context window at standard pricing with 78.3% accuracy on 1M-token 8-needle retrieval test (source: Anthropic docs, Models Overview; Claude Opus 4.6 System Card)",
+        "128K max output tokens, the highest of any Claude model (source: Anthropic docs, Models Overview)",
+        "Adaptive thinking mode where Claude dynamically decides when and how much to think, with interleaved thinking between tool calls (source: Anthropic docs, Extended Thinking)",
+        "Native subagent orchestration \u2014 proactively delegates work to specialized subagents without explicit instruction (source: Anthropic docs, Prompting Best Practices, Subagent Orchestration)",
+        "Structured outputs with guaranteed JSON schema compliance via json_schema format and strict tool use (source: Anthropic docs, Structured Outputs)",
+        "Improved vision capabilities for image processing, data extraction, screenshots, and UI element interpretation including computer use (source: Anthropic docs, Prompting Best Practices, Improved Vision Capabilities)",
+        "68.8% on ARC-AGI-2 (nearly doubled from Opus 4.5's 37.6%) and 80.84% on SWE-bench Verified (source: Claude Opus 4.6 System Card)"
+      ],
+      "known_limitations": [
+        "Prefilled responses on the last assistant turn are no longer supported \u2014 must use structured outputs, tool calling, or explicit instructions instead (source: Anthropic docs, Prompting Best Practices, Migrating Away from Prefilled Responses)",
+        "Tendency to overengineer by creating extra files, adding unnecessary abstractions, or building unrequested flexibility; requires explicit guidance to keep solutions minimal (source: Anthropic docs, Prompting Best Practices, Overeagerness)",
+        "May take difficult-to-reverse actions (deleting files, force-pushing, posting to external services) without confirmation unless explicitly guided on safety boundaries (source: Anthropic docs, Prompting Best Practices, Balancing Autonomy and Safety)",
+        "Extended thinking with vision is not compatible (source: Anthropic docs, Extended Thinking, Constraints)",
+        "Strong predilection for spawning subagents even when simpler direct approaches would suffice, requiring explicit guidance to constrain (source: Anthropic docs, Prompting Best Practices, Subagent Orchestration)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "XML tags (<instructions>, <context>, <output_format>, <examples>) for structured prompts. System prompt via the 'system' API parameter. Role-setting in system prompt focuses behavior and tone.",
+        "recommended_practices": [
+          "Use XML tags to structure complex prompts \u2014 wrap instructions, context, examples, and variable inputs in descriptive tags like <instructions>, <context>, <input> to reduce misinterpretation (source: Anthropic docs, Prompting Best Practices, Structure Prompts with XML Tags)",
+          "Use adaptive thinking with effort parameter (low/medium/high/max) instead of manual budget_tokens; budget_tokens is deprecated on Opus 4.6 (source: Anthropic docs, Prompting Best Practices, Leverage Thinking; Extended Thinking)",
+          "Provide 3-5 diverse, relevant examples wrapped in <example> tags for few-shot prompting to dramatically improve accuracy and consistency (source: Anthropic docs, Prompting Best Practices, Use Examples Effectively)",
+          "Place longform data at the top of the prompt, above queries and instructions \u2014 queries at the end improve response quality by up to 30% in tests (source: Anthropic docs, Prompting Best Practices, Long Context Prompting)",
+          "Be explicit about desired behavior rather than relying on inference; tell Claude what to do instead of what not to do (source: Anthropic docs, Prompting Best Practices, Be Clear and Direct)",
+          "Dial back aggressive tool-triggering language from older prompts \u2014 Opus 4.6 is significantly more proactive and may overtrigger on instructions needed for previous models (source: Anthropic docs, Prompting Best Practices, Tool Usage)"
+        ],
+        "anti_patterns": [
+          "Do not use prefilled assistant responses on the last turn \u2014 deprecated in Claude 4.6; use structured outputs or tool calling instead (source: Anthropic docs, Prompting Best Practices, Migrating Away from Prefilled Responses)",
+          "Avoid using markdown headers for structured task instructions when XML tags would be more precise \u2014 XML tags help Claude parse prompts unambiguously (source: Anthropic docs, Prompting Best Practices, Structure Prompts with XML Tags; Refrase eval, 46-config study)",
+          "Do not use tool_choice 'any' or force specific tools when extended thinking is enabled \u2014 only 'auto' and 'none' are supported (source: Anthropic docs, Extended Thinking, Tool Use Limitations)",
+          "Avoid over-prompting with aggressive language like 'CRITICAL: You MUST use this tool' \u2014 newer models overtrigger on instructions designed for older models (source: Anthropic docs, Prompting Best Practices, Tool Usage)"
+        ],
+        "sources": [
+          "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+          "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/use-xml-tags",
+          "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+          "https://platform.claude.com/docs/en/about-claude/models/overview",
+          "https://platform.claude.com/docs/en/about-claude/pricing",
+          "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        ]
+      },
+      "task_strengths": [
+        "extraction",
+        "analysis",
+        "generation",
+        "code"
+      ],
+      "cost_tier": "$$$",
+      "adaptations": [
+        "xml-structure",
+        "role-extraction",
+        "output-format"
+      ],
+      "benchmark": {
+        "quality": 97,
+        "speed": 2800,
+        "adaptation_gain": 14
+      },
+      "refrase_notes": "Claude Opus 4.6 is the most capable model in the Claude family and one of the strongest frontier models available. Its XML instruction-following is its most distinctive prompting behavior \u2014 our 46-configuration eval study confirmed 12-18% improvement when restructuring prompts with XML tags vs plain text. The model's adaptive thinking mode is a major differentiator: it dynamically allocates reasoning effort per step, which means prompt optimization must account for thinking budget as a variable rather than a constant. Opus 4.6 is more responsive to system prompts than any predecessor, so prompts migrated from older models often need de-escalation of imperative language to avoid overtriggering. The 1M context window at standard pricing makes it uniquely suited for document-heavy extraction tasks where competing models charge premiums for long context. For Refrase users, the key adaptation is converting markdown-structured prompts to XML-tagged prompts and ensuring the effort parameter is tuned appropriately \u2014 too-high effort inflates thinking tokens without proportional quality gains on simpler tasks."
+    },
+    {
+      "id": "claude-sonnet",
+      "name": "Claude Sonnet 4.6",
+      "provider": "Anthropic",
+      "family": "claude",
+      "official_url": "https://platform.claude.com/docs/en/about-claude/models/overview",
+      "model_card_url": "https://anthropic.com/claude-sonnet-4-6-system-card",
+      "release_date": "2026-02-01",
+      "context_window": 1000000,
+      "max_output_tokens": 64000,
+      "pricing": {
+        "input_per_1m": 3.0,
+        "output_per_1m": 15.0,
+        "notes": "Batch API: $1.50/$7.50 per MTok (50% discount). Prompt caching: 5-min write 1.25x, 1-hour write 2x, cache hit 0.1x base input. 1M context window at standard pricing (no long-context surcharge unlike Sonnet 4.5). (source: Anthropic docs, Pricing)"
+      },
+      "key_capabilities": [
+        "Best combination of speed and intelligence \u2014 optimized for workloads where fast turnaround and cost efficiency matter most (source: Anthropic docs, Models Overview)",
+        "1M token context window at standard pricing with no long-context surcharge, unlike predecessor Sonnet 4.5 which required beta header and premium pricing above 200K (source: Anthropic docs, Pricing, Long Context Pricing)",
+        "Supports both adaptive thinking and manual extended thinking with interleaved mode, providing flexible reasoning control (source: Anthropic docs, Prompting Best Practices, Leverage Thinking)",
+        "Best-in-class accuracy on computer use evaluations using adaptive thinking mode (source: Anthropic docs, Prompting Best Practices, When to Try Adaptive Thinking)",
+        "Structured outputs with guaranteed JSON schema compliance via json_schema format and strict tool use (source: Anthropic docs, Structured Outputs)",
+        "Defaults to effort level of 'high'; adjustable to medium or low for latency-sensitive workloads (source: Anthropic docs, Prompting Best Practices, Migrating from Sonnet 4.5 to Sonnet 4.6)",
+        "Excels at parallel tool execution \u2014 runs multiple speculative searches, reads several files at once, and executes bash commands in parallel (source: Anthropic docs, Prompting Best Practices, Optimize Parallel Tool Calling)"
+      ],
+      "known_limitations": [
+        "Prefilled responses on the last assistant turn are no longer supported \u2014 must use structured outputs, tool calling, or explicit instructions instead (source: Anthropic docs, Prompting Best Practices, Migrating Away from Prefilled Responses)",
+        "Default 'high' effort level may cause higher latency than Sonnet 4.5; must explicitly set effort to 'medium' or 'low' for latency-sensitive applications (source: Anthropic docs, Prompting Best Practices, Migrating from Sonnet 4.5 to Sonnet 4.6)",
+        "Extended thinking with vision is not compatible (source: Anthropic docs, Extended Thinking, Constraints)",
+        "Cannot toggle thinking during a single assistant turn including tool use loops \u2014 the entire turn must use consistent thinking mode (source: Anthropic docs, Extended Thinking, Toggling Thinking)",
+        "When using extended thinking, only tool_choice 'auto' or 'none' is supported \u2014 cannot use 'any' or force specific tools (source: Anthropic docs, Extended Thinking, Tool Use Limitations)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "XML tags (<instructions>, <context>, <output_format>, <examples>) for structured prompts. System prompt via the 'system' API parameter. Role-setting in system prompt focuses behavior and tone.",
+        "recommended_practices": [
+          "Use XML tags to structure complex prompts \u2014 wrap each content type in descriptive tags like <instructions>, <context>, <input> to reduce misinterpretation (source: Anthropic docs, Prompting Best Practices, Structure Prompts with XML Tags)",
+          "For coding use cases, start with medium effort and budget_tokens around 16K; for chat/non-coding, start with low effort (source: Anthropic docs, Prompting Best Practices, Migrating from Sonnet 4.5 to Sonnet 4.6)",
+          "Switch from adaptive to extended thinking with a budget_tokens cap for a hard ceiling on thinking costs while preserving quality (source: Anthropic docs, Prompting Best Practices, Overthinking)",
+          "Provide 3-5 diverse examples in <example> tags for few-shot prompting; include <thinking> tags inside examples to demonstrate reasoning patterns (source: Anthropic docs, Prompting Best Practices, Use Examples Effectively; Thinking and Reasoning)",
+          "Place longform data at the top of prompts, above queries and instructions \u2014 queries at end improve quality by up to 30% (source: Anthropic docs, Prompting Best Practices, Long Context Prompting)",
+          "Set max output token budget to 64K at medium or high effort to give the model room to think and act (source: Anthropic docs, Prompting Best Practices, Migrating from Sonnet 4.5 to Sonnet 4.6)"
+        ],
+        "anti_patterns": [
+          "Do not use prefilled assistant responses on the last turn \u2014 deprecated in Claude 4.6; use structured outputs or explicit instructions instead (source: Anthropic docs, Prompting Best Practices, Migrating Away from Prefilled Responses)",
+          "Avoid leaving effort unset \u2014 Sonnet 4.6 defaults to 'high' which may cause unexpected latency increases vs Sonnet 4.5 (source: Anthropic docs, Prompting Best Practices, Migrating from Sonnet 4.5 to Sonnet 4.6)",
+          "Avoid using markdown headers for structured task instructions when XML tags would be more precise (source: Anthropic docs, Prompting Best Practices, Structure Prompts with XML Tags; Refrase eval, 46-config study)",
+          "Do not use tool_choice 'any' or force specific tools when extended thinking is enabled (source: Anthropic docs, Extended Thinking, Tool Use Limitations)"
+        ],
+        "sources": [
+          "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+          "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/use-xml-tags",
+          "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+          "https://platform.claude.com/docs/en/about-claude/models/overview",
+          "https://platform.claude.com/docs/en/about-claude/pricing",
+          "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        ]
+      },
+      "task_strengths": [
+        "extraction",
+        "analysis",
+        "generation",
+        "code"
+      ],
+      "cost_tier": "$$",
+      "adaptations": [
+        "xml-structure",
+        "role-extraction",
+        "output-format"
+      ],
+      "benchmark": {
+        "quality": 94,
+        "speed": 1200,
+        "adaptation_gain": 12
+      },
+      "refrase_notes": "Claude Sonnet 4.6 is the workhorse of the Claude family \u2014 it hits a sweet spot of intelligence, speed, and cost that makes it the default choice for most production workloads. The 1M context window at standard pricing (a major improvement over Sonnet 4.5's premium long-context surcharge) makes it competitive with Opus for document-heavy tasks at 40% lower cost. The critical tuning dimension for Sonnet 4.6 is the effort parameter: unoptimized prompts inherit the default 'high' effort, which burns thinking tokens unnecessarily on simple tasks. Refrase's adaptation layer automatically converts markdown-structured prompts to XML-tagged prompts, which our 46-configuration study showed yields 12% average improvement. For latency-sensitive applications, the recommended pattern is effort=low with thinking disabled, which delivers similar or better performance vs Sonnet 4.5 at much lower latency. For agentic coding, adaptive thinking at medium effort with interleaved mode provides the best quality-to-cost ratio."
+    },
+    {
+      "id": "claude-haiku",
+      "name": "Claude Haiku 4.5",
+      "provider": "Anthropic",
+      "family": "claude",
+      "official_url": "https://platform.claude.com/docs/en/about-claude/models/overview",
+      "release_date": "2025-10-01",
+      "context_window": 200000,
+      "max_output_tokens": 64000,
+      "pricing": {
+        "input_per_1m": 1.0,
+        "output_per_1m": 5.0,
+        "notes": "Batch API: $0.50/$2.50 per MTok (50% discount). Prompt caching: 5-min write 1.25x, 1-hour write 2x, cache hit 0.1x base input. Extended thinking tokens billed as output at $5/MTok. Does not support adaptive thinking. (source: Anthropic docs, Pricing; Models Overview)"
+      },
+      "key_capabilities": [
+        "Fastest model with near-frontier intelligence \u2014 achieves roughly 90% of Sonnet 4.5's capabilities at a fraction of the cost (source: Anthropic docs, Models Overview; DataCamp, Claude Haiku 4.5)",
+        "First Haiku model to include extended thinking, computer use, and context awareness (source: Anthropic, Introducing Claude Haiku 4.5)",
+        "73.3% on SWE-bench Verified \u2014 highest after Sonnet 4.5, surpassing even Sonnet 4 (source: Anthropic, Introducing Claude Haiku 4.5)",
+        "50.7% success rate on computer use benchmarks, outperforming Sonnet 4's 42.2% (source: Anthropic, Introducing Claude Haiku 4.5)",
+        "Structured outputs with guaranteed JSON schema compliance via json_schema format and strict tool use (source: Anthropic docs, Structured Outputs)",
+        "200K context window with 64K max output tokens (source: Anthropic docs, Models Overview)"
+      ],
+      "known_limitations": [
+        "Does not support adaptive thinking \u2014 only manual extended thinking with budget_tokens (source: Anthropic docs, Models Overview)",
+        "200K context window only \u2014 no 1M token option available unlike Sonnet 4.6 and Opus 4.6 (source: Anthropic docs, Models Overview)",
+        "Notably verbose output \u2014 generates approximately 2x the tokens compared to average models on equivalent benchmarks, which increases effective output costs (source: DataCamp, Claude Haiku 4.5; Artificial Analysis)",
+        "Small but meaningful gaps compared to frontier models on multi-hop reasoning and highly nuanced analysis tasks (source: DataCamp, Claude Haiku 4.5)",
+        "Middle-of-pack on LiveCodeBench and academic reasoning benchmarks despite strong agentic coding performance (source: DataCamp, Claude Haiku 4.5)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "XML tags (<instructions>, <context>, <output_format>, <examples>) for structured prompts. System prompt via the 'system' API parameter. Role-setting in system prompt focuses behavior and tone.",
+        "recommended_practices": [
+          "Use XML tags to structure complex prompts \u2014 same best practices as Sonnet and Opus apply (source: Anthropic docs, Prompting Best Practices, Structure Prompts with XML Tags)",
+          "Use manual extended thinking with budget_tokens for complex tasks that benefit from step-by-step reasoning; minimum budget is 1,024 tokens (source: Anthropic docs, Extended Thinking)",
+          "Provide 3-5 diverse examples in <example> tags for few-shot prompting (source: Anthropic docs, Prompting Best Practices, Use Examples Effectively)",
+          "Add explicit conciseness instructions to counteract verbosity \u2014 e.g., 'Respond concisely. Avoid unnecessary elaboration.' (source: Refrase eval, verbosity analysis across Haiku 4.5 outputs)",
+          "Place longform data at the top of prompts, above queries and instructions (source: Anthropic docs, Prompting Best Practices, Long Context Prompting)"
+        ],
+        "anti_patterns": [
+          "Do not use adaptive thinking \u2014 Haiku 4.5 does not support it; use manual thinking with budget_tokens instead (source: Anthropic docs, Models Overview)",
+          "Avoid exceeding 200K input tokens \u2014 Haiku has no 1M context option and will reject oversized requests (source: Anthropic docs, Models Overview)",
+          "Avoid relying on Haiku for multi-hop reasoning or highly nuanced analysis where frontier accuracy is required (source: DataCamp, Claude Haiku 4.5)"
+        ],
+        "sources": [
+          "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices",
+          "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/use-xml-tags",
+          "https://platform.claude.com/docs/en/build-with-claude/extended-thinking",
+          "https://platform.claude.com/docs/en/about-claude/models/overview",
+          "https://platform.claude.com/docs/en/about-claude/pricing",
+          "https://www.anthropic.com/news/claude-haiku-4-5"
+        ]
+      },
+      "task_strengths": [
+        "extraction",
+        "analysis",
+        "generation",
+        "code"
+      ],
+      "cost_tier": "$",
+      "adaptations": [
+        "xml-structure",
+        "role-extraction",
+        "output-format"
+      ],
+      "benchmark": {
+        "quality": 82,
+        "speed": 450,
+        "adaptation_gain": 10
+      },
+      "refrase_notes": "Claude Haiku 4.5 is the cost-efficiency champion of the Claude family \u2014 at $1/$5 per MTok, it delivers surprisingly frontier-adjacent quality for high-volume workloads. The model's biggest gotcha is verbosity: it generates roughly 2x the tokens of comparable models on equivalent tasks, which can erode cost savings if left unchecked. Refrase's adaptation layer addresses this by injecting conciseness directives and output-format constraints that keep responses focused. The XML structuring gains that benefit Opus and Sonnet apply equally to Haiku, with our eval showing a ~10% improvement from prompt adaptation. Haiku 4.5 is the first in its class to support extended thinking and computer use, making it viable for agentic workflows that were previously Sonnet-only territory. For judge/evaluator roles in multi-model pipelines, Haiku 4.5 offers excellent cost-performance with zero timeouts in our 46-model eval study (replacing DeepSeek V3.2 which had ~17% timeout rate). The 200K context limit is its main constraint \u2014 for document-heavy extraction exceeding that window, Sonnet 4.6 at 3x the price is the next step up."
+    },
+    {
+      "id": "gpt-4o",
+      "name": "GPT-4o",
+      "provider": "OpenAI",
+      "family": "openai",
+      "official_url": "https://platform.openai.com/docs/models/gpt-4o",
+      "context_window": 128000,
+      "max_output_tokens": 16384,
+      "knowledge_cutoff": "2024-06-01",
+      "pricing": {
+        "input_per_1m": 2.5,
+        "output_per_1m": 10.0,
+        "cached_input_per_1m": 1.25
+      },
+      "key_capabilities": [
+        "Multimodal flagship model supporting text, vision, and audio inputs (source: OpenAI GPT-4o Model Page, Overview)",
+        "Structured Outputs with strict JSON schema enforcement via response_format parameter, achieving near-100% schema adherence (source: OpenAI Structured Outputs Guide, Introduction)",
+        "Function/tool calling with strict:true for guaranteed argument conformance (source: OpenAI Structured Outputs Guide, Function Calling)",
+        "128K context window for processing long documents and conversations (source: OpenAI Models Page, GPT-4o)",
+        "Prompt caching with 50% discount on repeated context, reducing cost to $1.25/1M cached input tokens (source: OpenAI Pricing Page, GPT-4o)",
+        "Image understanding and visual reasoning from uploaded images (source: OpenAI GPT-4o System Card, Section 1)",
+        "Supports both system messages and developer messages for instruction delivery (source: Azure OpenAI Reasoning Models docs, System Messages)"
+      ],
+      "known_limitations": [
+        "Hallucination rate of approximately 15.8% on the Vectara FaithJudge Leaderboard; citation fabrication remains common across test conditions (source: Vectara FaithJudge Leaderboard 2025; StudyFinds GPT-4o Hallucination Study, Nov 2025)",
+        "Default output capped at 4,096 tokens unless max_tokens is explicitly set to 16,384; developers must configure this parameter (source: OpenAI Developer Community, GPT-4o Output Token Discussion)",
+        "Superseded by GPT-4.1 which is cheaper ($2/$8 vs $2.50/$10), has 1M token context (vs 128K), and scores higher on coding and instruction-following benchmarks (source: OpenAI GPT-4.1 Announcement, Introducing GPT-4.1)",
+        "Trial-and-error debugging pattern when attempting autonomous/agentic actions; frequently hallucinating API calls and file paths (source: OpenAI GPT-4o System Card, Autonomous Action Evaluation)",
+        "Knowledge cutoff of June 2024 means no awareness of events after that date without web search augmentation (source: OpenAI Model Release Notes; otterly.ai LLM Knowledge Cutoff Dates)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "OpenAI GPT models use role-based chat completion messages with 'system' (or 'developer' for reasoning models) role. System messages can appear at the start of the conversation and set the model's behavior. Unlike Claude which uses a separate top-level system parameter, GPT embeds system instructions as the first message in the messages array with role='system'. GPT-4.1+ follows instructions more literally than GPT-4o, requiring explicit specification rather than relying on inference. (source: OpenAI GPT-4.1 Prompting Guide, Instruction Hierarchy; Azure OpenAI Reasoning Models docs, Developer Messages)",
+        "recommended_practices": [
+          "Structure system prompts with clear hierarchical sections: Role and Objective, Instructions, Reasoning Steps, Output Format, Examples, Context, Final Instructions (source: OpenAI GPT-4.1 Prompting Guide, System Message Structure)",
+          "Use markdown formatting for prompt structure: H1-H4 titles for sections, inline backticks for code, numbered/bulleted lists for instructions (source: OpenAI GPT-4.1 Prompting Guide, Delimiter Conventions)",
+          "Use XML tags for wrapping structured data in context -- they perform well for precise start/end wrapping, metadata attributes, and nesting, e.g. <doc id='1' title='Name'>Content</doc> (source: OpenAI GPT-4.1 Prompting Guide, Delimiter Conventions)",
+          "For long context, place instructions at BOTH the beginning and end of provided context for best performance (source: OpenAI GPT-4.1 Prompting Guide, Long Context Handling)",
+          "Use the API tools field for function/tool definitions rather than injecting schemas into the prompt manually -- API-parsed tools outperform manual injection by ~2% on SWE-bench (source: OpenAI GPT-4.1 Prompting Guide, Tool & Function Calling)",
+          "For agentic use, include three key system prompt instructions: (1) persistence -- keep going until resolved, (2) tool-calling honesty -- don't guess, use tools, (3) planning -- plan extensively before each function call. These alone increased SWE-bench scores by ~20% (source: OpenAI GPT-4.1 Prompting Guide, Agentic Behavior Patterns)",
+          "Use few-shot examples for standard GPT models (GPT-4o, GPT-4.1) to demonstrate desired patterns. But AVOID few-shot for reasoning models (o1, o3, o4-mini) where zero-shot performs better (source: OpenAI Help Center, Prompt Engineering Best Practices; OpenAI Reasoning Best Practices)",
+          "Specify context reliance explicitly: tell the model whether to use only provided documents or also its own knowledge (source: OpenAI GPT-4.1 Prompting Guide, Context Reliance Tuning)",
+          "Pin production applications to specific model snapshots (e.g., gpt-4o-2024-08-06) for consistent behavior (source: OpenAI Prompt Engineering Guide, Production Recommendations)",
+          "Structure prompts for caching: place static content first (system instructions, few-shot examples, tool definitions) and variable content last (user messages) (source: OpenAI Prompt Engineering Guide, Caching Strategy)"
+        ],
+        "anti_patterns": [
+          "Do NOT inject tool/function schemas directly into system prompts -- use the API tools parameter instead (source: OpenAI GPT-4.1 Prompting Guide, Tool & Function Calling)",
+          "Do NOT use all-caps, bribes, or tips to emphasize instructions -- these are generally unnecessary with GPT-4.1+ (source: OpenAI GPT-4.1 Prompting Guide, Instruction Hierarchy)",
+          "Do NOT instruct the model to 'must call a tool before responding' without fallback -- this causes hallucinated tool calls when insufficient information exists. Instead instruct: 'if you don't have enough information, ask the user' (source: OpenAI GPT-4.1 Prompting Guide, Common Anti-Patterns)",
+          "Do NOT use JSON format for wrapping multiple documents in context -- it performs poorly due to verbosity and escaping overhead. Use XML or pipe-delimited format instead (source: OpenAI GPT-4.1 Prompting Guide, Delimiter Conventions)",
+          "Do NOT add 'think step by step' to reasoning models (o1, o3, o4-mini) -- they already reason internally and adding such instructions can hurt performance (source: OpenAI Reasoning Best Practices; Azure OpenAI Reasoning Models docs)",
+          "Do NOT use few-shot prompting with reasoning models -- start with zero-shot and add only 1-2 examples if needed (source: OpenAI Reasoning Best Practices)",
+          "Do NOT include sample phrases without telling the model to vary them -- GPT models tend to repeat exact phrases verbatim (source: OpenAI GPT-4.1 Prompting Guide, Common Anti-Patterns)"
+        ],
+        "sources": [
+          "https://developers.openai.com/cookbook/examples/gpt4-1_prompting_guide/",
+          "https://platform.openai.com/docs/guides/prompt-engineering",
+          "https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api",
+          "https://platform.openai.com/docs/guides/structured-outputs",
+          "https://platform.openai.com/docs/guides/reasoning-best-practices",
+          "https://openai.com/index/gpt-4o-system-card/"
+        ]
+      },
+      "structured_output": {
+        "method": "response_format with json_schema and strict:true, or function calling with strict:true",
+        "schema_constraints": [
+          "All properties must be listed in 'required' array -- no truly optional fields (source: OpenAI Structured Outputs Guide, Limitations)",
+          "additionalProperties must be set to false on all objects (source: OpenAI Structured Outputs Guide, Schema Requirements)",
+          "Optional fields must use union type with null, e.g. ['string', 'null'] (source: OpenAI Structured Outputs Guide, Optional Fields)",
+          "Maximum 100 total properties across the schema (source: OpenAI Developer Community, Schema Limitations)",
+          "Maximum nesting depth of 5 levels (source: OpenAI Developer Community, Schema Limitations)",
+          "Root objects cannot use anyOf type (source: OpenAI Developer Community, Schema Limitations)"
+        ],
+        "notes": "Structured Outputs constrains generation at the token level (not just post-validation), guaranteeing valid JSON that conforms to the schema. This is distinct from legacy JSON mode which only guaranteed syntactic JSON validity. Supported on gpt-4o-2024-08-06 and later. (source: OpenAI Introducing Structured Outputs Blog Post)"
+      },
+      "task_strengths": [
+        "extraction",
+        "analysis",
+        "generation",
+        "code",
+        "vision",
+        "multimodal",
+        "function-calling",
+        "instruction-following"
+      ],
+      "cost_tier": "$$$",
+      "adaptations": [
+        "markdown-structure",
+        "xml-context-wrapping",
+        "json-schema-strict",
+        "few-shot-examples",
+        "caching-optimization",
+        "agentic-persistence"
+      ],
+      "benchmark": {
+        "quality": 88,
+        "speed": 750,
+        "adaptation_gain": 8,
+        "notes": "MMLU: 88.7, HumanEval: 90.2, SWE-bench Verified: 33.2% (vs GPT-4.1 at 54.6%). Superseded by GPT-4.1 on most benchmarks. (source: OpenAI GPT-4.1 Announcement; llm-stats.com)"
+      },
+      "successor": {
+        "model": "gpt-4.1",
+        "context_window": 1047576,
+        "max_output_tokens": 32768,
+        "pricing": {
+          "input_per_1m": 2.0,
+          "output_per_1m": 8.0,
+          "cached_input_per_1m": 0.5
+        },
+        "improvements": "20% cheaper input, 20% cheaper output, 75% cheaper cached input, 8x context window (1M vs 128K), 2x output tokens (32K vs 16K), +21 points on SWE-bench Verified (54.6% vs 33.2%), significantly better instruction following (source: OpenAI GPT-4.1 Announcement)"
+      },
+      "refrase_notes": "GPT-4o is OpenAI's previous-generation multimodal flagship, now superseded by GPT-4.1 (cheaper, 1M context, better benchmarks). Key differentiation from Claude: GPT uses role-based system messages in the messages array rather than a separate system parameter. GPT-4.1+ follows instructions more literally than GPT-4o, requiring explicit specification. OpenAI recommends markdown headers for prompt structure (similar to Claude) but also supports XML tags for context wrapping (unlike Llama which has no strong XML support). For structured outputs, OpenAI enforces strict schema constraints (all fields required, additionalProperties:false, max 100 properties, max depth 5) that differ from Claude's approach. GPT models benefit significantly from the 3-instruction agentic pattern (persistence + tool honesty + planning). The prompt caching strategy (static content first, variable last) is analogous to Anthropic's caching but uses different mechanics. For Refrase, the GPT adapter should use markdown-structured prompts with explicit section headers, avoid JSON for context wrapping in favor of XML, and leverage the strict structured output mode rather than hoping for JSON compliance."
+    },
+    {
+      "id": "gpt-4o-mini",
+      "name": "GPT-4o mini",
+      "provider": "OpenAI",
+      "family": "openai",
+      "official_url": "https://platform.openai.com/docs/models/gpt-4o-mini",
+      "context_window": 128000,
+      "max_output_tokens": 16384,
+      "knowledge_cutoff": "2023-10-01",
+      "pricing": {
+        "input_per_1m": 0.15,
+        "output_per_1m": 0.6,
+        "cached_input_per_1m": 0.075
+      },
+      "key_capabilities": [
+        "Cost-efficient small model at $0.15/1M input tokens -- more than 60% cheaper than GPT-3.5 Turbo while exceeding its quality (source: OpenAI GPT-4o mini Announcement, Pricing)",
+        "Supports text and vision inputs with text outputs; multimodal reasoning on images (source: OpenAI GPT-4o mini Announcement, Capabilities)",
+        "Structured Outputs with strict JSON schema enforcement, same as GPT-4o (source: OpenAI Structured Outputs Guide, Supported Models -- gpt-4o-mini-2024-07-18)",
+        "128K context window matching GPT-4o for long document processing (source: OpenAI Models Page, GPT-4o mini)",
+        "MMLU score of 82%, ranking higher than GPT-4 on chat preference evaluations (source: OpenAI GPT-4o mini Announcement; llm-stats.com, Benchmark Scores)",
+        "Function/tool calling support with the same strict:true schema enforcement (source: OpenAI Structured Outputs Guide, Function Calling)",
+        "Logprobs and top_logprobs support for confidence scoring and token analysis (source: OpenRouter GPT-4o-mini Page, Features)"
+      ],
+      "known_limitations": [
+        "Knowledge cutoff of October 2023 -- 8 months behind GPT-4o's June 2024 cutoff (source: llm-stats.com GPT-4o mini page, Knowledge Cutoff; OpenAI Models Page)",
+        "SWE-bench Verified score of only 8.7%, drastically lower than GPT-4o's 33.2% -- not suitable for complex autonomous coding tasks (source: llm-stats.com GPT-4o mini, Benchmark Scores)",
+        "Superseded by GPT-4.1 mini which is 2.7x more expensive on input ($0.40 vs $0.15) but offers 1M context, 32K output, and significantly better benchmarks across the board (source: OpenAI GPT-4.1 Announcement; llm-stats.com GPT-4.1 mini)",
+        "Does not support reasoning mode -- no internal chain-of-thought like o1/o3/o4-mini models (source: OpenRouter GPT-4o-mini Page, Features)",
+        "Lower quality on complex reasoning and math tasks compared to full GPT-4o: MATH score 70.2% vs GPT-4o's higher performance (source: llm-stats.com GPT-4o mini, Benchmark Scores)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Same role-based chat completion format as GPT-4o with 'system' role messages. System messages embedded as first message in the messages array. All GPT-4.1 prompting guide practices apply to GPT-4o mini as well, though the model is less capable at complex instruction following. (source: OpenAI GPT-4.1 Prompting Guide; OpenAI Models Page)",
+        "recommended_practices": [
+          "Use structured system prompts with clear sections: Role, Instructions, Output Format, Examples -- same patterns as GPT-4o (source: OpenAI GPT-4.1 Prompting Guide, System Message Structure)",
+          "Leverage few-shot examples more heavily than with GPT-4o, as the smaller model benefits more from demonstrated patterns (source: OpenAI Help Center, Prompt Engineering Best Practices, Few-Shot Learning)",
+          "Use markdown headers and delimiters to separate prompt sections clearly -- helps the smaller model parse structure (source: OpenAI GPT-4.1 Prompting Guide, Delimiter Conventions)",
+          "Keep prompts more explicit and less ambiguous than you would for GPT-4o -- the mini model infers intent less reliably (source: OpenAI GPT-4.1 Prompting Guide, Instruction Hierarchy -- applies proportionally to smaller models)",
+          "Use structured outputs (strict JSON schema) to guarantee output format compliance -- especially important for smaller models prone to format drift (source: OpenAI Structured Outputs Guide, Introduction)",
+          "Optimize for caching by placing static system instructions and examples before variable user content (source: OpenAI Prompt Engineering Guide, Caching Strategy)"
+        ],
+        "anti_patterns": [
+          "Do NOT rely on GPT-4o mini for complex multi-step reasoning without explicit step-by-step decomposition in the prompt (source: OpenAI Help Center, Prompt Engineering Best Practices)",
+          "Do NOT use for autonomous agentic workflows requiring complex tool orchestration -- SWE-bench score of 8.7% indicates poor agentic capability (source: llm-stats.com GPT-4o mini Benchmarks)",
+          "Same anti-patterns as GPT-4o apply: avoid JSON context wrapping, avoid manual tool schema injection, avoid sample phrase repetition without variation instruction (source: OpenAI GPT-4.1 Prompting Guide, Common Anti-Patterns)"
+        ],
+        "sources": [
+          "https://developers.openai.com/cookbook/examples/gpt4-1_prompting_guide/",
+          "https://platform.openai.com/docs/guides/prompt-engineering",
+          "https://help.openai.com/en/articles/6654000-best-practices-for-prompt-engineering-with-the-openai-api",
+          "https://platform.openai.com/docs/guides/structured-outputs",
+          "https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/"
+        ]
+      },
+      "structured_output": {
+        "method": "response_format with json_schema and strict:true, or function calling with strict:true",
+        "schema_constraints": [
+          "Same constraints as GPT-4o: all properties required, additionalProperties:false, union with null for optional fields (source: OpenAI Structured Outputs Guide)",
+          "Maximum 100 total properties, maximum nesting depth of 5 levels (source: OpenAI Developer Community)",
+          "Supported since gpt-4o-mini-2024-07-18 snapshot (source: OpenAI Structured Outputs Guide, Supported Models)"
+        ],
+        "notes": "Same token-level constrained generation as GPT-4o. Structured outputs are especially valuable for mini models where unconstrained generation is more likely to drift from expected formats."
+      },
+      "task_strengths": [
+        "extraction",
+        "classification",
+        "summarization",
+        "customer-support",
+        "high-volume-processing",
+        "real-time-applications"
+      ],
+      "cost_tier": "$",
+      "adaptations": [
+        "markdown-structure",
+        "json-schema-strict",
+        "few-shot-examples",
+        "explicit-decomposition",
+        "caching-optimization"
+      ],
+      "benchmark": {
+        "quality": 82,
+        "speed": 1200,
+        "adaptation_gain": 10,
+        "notes": "MMLU: 82, HumanEval: 87.2, MATH: 70.2, SWE-bench: 8.7%. Excellent cost-performance ratio for high-volume, simpler tasks. (source: llm-stats.com GPT-4o mini Benchmarks)"
+      },
+      "successor": {
+        "model": "gpt-4.1-mini",
+        "context_window": 1047576,
+        "max_output_tokens": 32768,
+        "pricing": {
+          "input_per_1m": 0.4,
+          "output_per_1m": 1.6
+        },
+        "improvements": "1M context window (vs 128K), 32K output (vs 16K), matches or exceeds GPT-4o intelligence while nearly halving latency and reducing cost 83% vs GPT-4o. MMLU: 87.5, IFEval: 84.1. Knowledge cutoff May 2024. (source: OpenAI GPT-4.1 Announcement; llm-stats.com GPT-4.1 mini)"
+      },
+      "refrase_notes": "GPT-4o mini is OpenAI's cost-optimized model, ideal for high-volume classification, extraction, and summarization tasks where GPT-4o's full capabilities are unnecessary. At $0.15/1M input tokens it is the cheapest capable model in OpenAI's lineup. Key differentiation from Claude Haiku: GPT-4o mini has a larger context window (128K vs Haiku's 200K) but lower reasoning quality. From Llama: GPT-4o mini offers structured output guarantees that open-source Llama models cannot match without additional tooling. For Refrase, the GPT-4o-mini adapter should use the same markdown-structured prompts as GPT-4o but with more explicit instructions and heavier use of few-shot examples. The structured output strict mode is critical for this model to prevent format drift. Its successor GPT-4.1-mini is significantly better on all dimensions but 2.7x more expensive on input -- the tradeoff is context window (8x larger) and output quality. Note: GPT-4o mini does NOT support reasoning/thinking mode -- for tasks requiring internal reasoning, use o4-mini instead."
+    },
+    {
+      "id": "gemini-pro",
+      "name": "Gemini 2.5 Pro",
+      "provider": "Google",
+      "family": "gemini",
+      "model_id": "gemini-2.5-pro",
+      "official_url": "https://ai.google.dev/gemini-api/docs/models",
+      "context_window": 1048576,
+      "max_output_tokens": 65536,
+      "knowledge_cutoff": "January 2025",
+      "pricing": {
+        "input_per_1m": 1.25,
+        "input_per_1m_over_200k": 2.5,
+        "output_per_1m": 10.0,
+        "output_per_1m_over_200k": 15.0,
+        "thinking_tokens_per_1m": 10.0,
+        "batch_input_per_1m": 0.625,
+        "batch_output_per_1m": 5.0,
+        "notes": "Pricing tiers split at 200k input tokens. Thinking tokens billed at output rate. Batch API is 50% off standard. (source: Google AI pricing page, https://ai.google.dev/gemini-api/docs/pricing)"
+      },
+      "key_capabilities": [
+        "1M token context window supporting text, code, images, audio, and video input \u2014 can process ~50,000 lines of code or 8 average-length novels in a single request (source: Google AI docs, Long Context guide, https://ai.google.dev/gemini-api/docs/long-context)",
+        "Built-in thinking/reasoning with configurable thinking budget from 128 to 32,768 tokens (default: dynamic). Thinking is enabled by default and cannot be fully disabled. (source: Google AI docs, Thinking guide, https://ai.google.dev/gemini-api/docs/thinking)",
+        "Native structured output via response_mime_type='application/json' with response_schema \u2014 guarantees syntactically valid JSON conforming to provided JSON Schema, supporting string/number/integer/boolean/object/array/null types plus anyOf, $ref, enum, format constraints (source: Google AI docs, Structured Output, https://ai.google.dev/gemini-api/docs/structured-output)",
+        "Grounding with Google Search \u2014 model autonomously generates search queries, retrieves web sources, and returns groundingChunks with URIs and groundingSupports linking claims to sources (source: Google AI docs, Google Search grounding, https://ai.google.dev/gemini-api/docs/google-search)",
+        "OpenAI API compatibility endpoint at generativelanguage.googleapis.com/v1beta/openai/ supporting chat completions, embeddings, function calling, and structured output via Pydantic/Zod schemas (source: Google AI docs, OpenAI Compatibility, https://ai.google.dev/gemini-api/docs/openai)",
+        "Context caching for repeated long-context usage at ~4x cost reduction vs standard input pricing (source: Google AI docs, Long Context guide, https://ai.google.dev/gemini-api/docs/long-context)",
+        "Multimodal input: up to 3,000 images per prompt, ~45 min video with audio, ~8.4 hours of audio, and document parsing up to 1,000 pages per file (source: Vertex AI docs, Gemini 2.5 Flash specifications \u2014 same limits apply to Pro, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash)",
+        "Many-shot in-context learning with hundreds to thousands of examples, achieving performance comparable to fine-tuned models (source: Google AI docs, Long Context guide, https://ai.google.dev/gemini-api/docs/long-context)"
+      ],
+      "known_limitations": [
+        "Structured output cannot be combined with function calling / tool use on Gemini 2.5 models \u2014 when tool calls are present in message history, structured outputs fail. Works on 2.0 models but breaks on 2.5. (source: GitHub issue googleapis/python-genai#867, https://github.com/googleapis/python-genai/issues/867)",
+        "Complex JSON schemas may trigger InvalidArgument: 400 errors. Complexity from long property names, large array limits, many-valued enums, many optional properties, or deep nesting can all cause failures. Must shorten names, flatten arrays, reduce constraints. (source: Vertex AI docs, Structured Output, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output)",
+        "Long context retrieval accuracy degrades for multiple simultaneous queries \u2014 model excels at single needle-in-haystack retrieval (~99% accuracy) but struggles with multi-needle retrieval, requiring multiple requests. (source: Google AI docs, Long Context guide, https://ai.google.dev/gemini-api/docs/long-context)",
+        "Thinking tokens consume output token budget and are billed \u2014 thinking budget can overflow or underflow the specified allocation depending on prompt complexity, and thinking cannot be disabled on 2.5 Pro. (source: Google AI docs, Thinking guide, https://ai.google.dev/gemini-api/docs/thinking)",
+        "System instructions do not fully prevent jailbreaks or leaks \u2014 Google explicitly warns against placing sensitive information in system instructions. (source: Vertex AI docs, System Instructions, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/system-instructions)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Gemini uses a dedicated systemInstruction field in the API request, separate from user messages. System instructions are processed BEFORE user prompts and persist across the entire conversation. They can be a single string or an array of strings. In Python SDK: system_instruction=['Role description', 'Behavioral rules']. In REST: systemInstruction.parts[].text. This is NOT embedded in the user message \u2014 it is a first-class API parameter. (source: Vertex AI docs, System Instructions, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/system-instructions)",
+        "recommended_practices": [
+          "Use XML-style tags (<context>, <task>) or Markdown headings as consistent delimiters to structure prompt sections \u2014 choose one format and use it consistently within a single prompt (source: Google AI docs, Prompt Design Strategies, https://ai.google.dev/gemini-api/docs/prompting-strategies)",
+          "Place critical instructions and constraints at the BEGINNING of the prompt, and for long contexts, put the specific question/task at the END after all context data (source: Vertex AI docs, Gemini 3 Prompting Guide, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)",
+          "Always include 3-5 few-shot examples with consistent formatting \u2014 Google explicitly recommends 'always include few-shot examples in your prompts' but warns too many cause overfitting (source: Google AI docs, Prompt Design Strategies, https://ai.google.dev/gemini-api/docs/prompting-strategies)",
+          "For structured output, set response_mime_type='application/json' with response_schema \u2014 do NOT duplicate the schema description in the prompt text; use the schema's 'description' fields instead to guide the model (source: Vertex AI docs, Structured Output, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output)",
+          "Use propertyOrdering in JSON schemas to enforce field generation order, and ensure any in-prompt schema references use the SAME property order as the schema definition (source: Vertex AI docs, Structured Output, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output)",
+          "Use objective constraints instead of subjective qualifiers \u2014 e.g. 'write a summary of 3 sentences or less' rather than 'write a brief summary' (source: Google AI docs, Prompt Design Strategies, https://ai.google.dev/gemini-api/docs/prompting-strategies)",
+          "For grounding to provided context only, explicitly state 'the provided context is the only source of truth for the current session' in system instructions (source: Vertex AI docs, Gemini 3 Prompting Guide, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)",
+          "Add current date context and knowledge cutoff statement for time-sensitive queries (source: Google AI docs, Prompt Design Strategies, https://ai.google.dev/gemini-api/docs/prompting-strategies)",
+          "Keep temperature at default 1.0 \u2014 lowering it may cause 'looping or degraded performance, particularly with complex mathematical or reasoning tasks' (source: Vertex AI docs, Gemini 3 Prompting Guide, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)"
+        ],
+        "anti_patterns": [
+          "DO NOT lower temperature below 1.0 for reasoning tasks \u2014 Gemini's reasoning is optimized for temp=1.0 and lower values cause looping and degraded performance (source: Vertex AI docs, Gemini 3 Prompting Guide, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)",
+          "DO NOT duplicate JSON schema in prompt text when using response_schema \u2014 include the schema only in the response_schema parameter to avoid confusion; use schema description fields for guidance (source: Vertex AI docs, Structured Output, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output)",
+          "DO NOT use too many few-shot examples \u2014 overfitting occurs; stick to 3-5 varied examples (source: Google AI docs, Prompt Design Strategies, https://ai.google.dev/gemini-api/docs/prompting-strategies)",
+          "DO NOT place essential instructions at the end of very long prompts \u2014 model may drop them during complex processing (source: Vertex AI docs, Gemini 3 Prompting Guide, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)",
+          "DO NOT use vague or subjective language ('brief', 'detailed', 'good') without measurable definitions (source: Google AI docs, Prompt Design Strategies, https://ai.google.dev/gemini-api/docs/prompting-strategies)",
+          "DO NOT combine structured output (response_mime_type) with function calling on Gemini 2.5 \u2014 they are incompatible and will fail (source: GitHub issue googleapis/python-genai#867)",
+          "DO NOT use inconsistent formatting across few-shot examples \u2014 responses will mirror the inconsistency (source: Google AI docs, Prompt Design Strategies, https://ai.google.dev/gemini-api/docs/prompting-strategies)"
+        ],
+        "sources": [
+          "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+          "https://ai.google.dev/gemini-api/docs/structured-output",
+          "https://ai.google.dev/gemini-api/docs/thinking",
+          "https://ai.google.dev/gemini-api/docs/long-context",
+          "https://ai.google.dev/gemini-api/docs/google-search",
+          "https://ai.google.dev/gemini-api/docs/openai",
+          "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/system-instructions",
+          "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide",
+          "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output"
+        ]
+      },
+      "task_strengths": [
+        "extraction",
+        "analysis",
+        "reasoning",
+        "long-context-synthesis",
+        "code-generation",
+        "multimodal-understanding",
+        "grounded-search",
+        "structured-output"
+      ],
+      "cost_tier": "$$$",
+      "adaptations": [
+        {
+          "id": "gemini-system-instruction-separation",
+          "description": "Move system prompt content into the dedicated systemInstruction API parameter rather than prepending to user messages. Gemini processes systemInstruction before user content and persists it across turns.",
+          "priority": "critical",
+          "source": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/system-instructions"
+        },
+        {
+          "id": "gemini-structured-output-native",
+          "description": "When JSON output is needed, use Gemini's native response_mime_type='application/json' with response_schema instead of instructing JSON in the prompt. Remove any in-prompt JSON schema descriptions and rely on schema description fields. Add propertyOrdering to control field generation order.",
+          "priority": "critical",
+          "source": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output"
+        },
+        {
+          "id": "gemini-xml-delimiters",
+          "description": "Structure prompt sections using XML-style tags (<context>, <task>, <constraints>, <examples>) or Markdown headings as delimiters. Google recommends picking one format and using it consistently.",
+          "priority": "high",
+          "source": "https://ai.google.dev/gemini-api/docs/prompting-strategies"
+        },
+        {
+          "id": "gemini-instruction-placement",
+          "description": "Place critical constraints and restrictions at the BEGINNING of the prompt. For long-context inputs, place the specific question/task at the END after all context data. Place negative constraints ('do not...') as the final prompt lines to prevent the model from dropping them.",
+          "priority": "high",
+          "source": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide"
+        },
+        {
+          "id": "gemini-objective-constraints",
+          "description": "Replace subjective qualifiers ('brief', 'detailed', 'comprehensive') with objective, measurable constraints ('3 sentences or less', 'between 100-200 words', 'exactly 5 bullet points').",
+          "priority": "medium",
+          "source": "https://ai.google.dev/gemini-api/docs/prompting-strategies"
+        },
+        {
+          "id": "gemini-temperature-default",
+          "description": "Do not set temperature below 1.0 for reasoning tasks. Gemini's reasoning capabilities are optimized for the default temperature of 1.0. Lower values cause looping and degraded performance.",
+          "priority": "medium",
+          "source": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide"
+        },
+        {
+          "id": "gemini-grounding-context",
+          "description": "When the model should only use provided context (not its training data), add explicit grounding instruction: 'The provided context is the only source of truth for the current session. Do not introduce external information.'",
+          "priority": "medium",
+          "source": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide"
+        },
+        {
+          "id": "gemini-thinking-budget",
+          "description": "Configure thinking budget based on task complexity: set thinkingBudget to low values (128-1024) for simple extraction, medium (4096-8192) for analysis, and high (16384-32768) for complex reasoning. Use -1 for dynamic allocation. For Gemini 3+, use thinkingLevel parameter instead (minimal/low/medium/high).",
+          "priority": "low",
+          "source": "https://ai.google.dev/gemini-api/docs/thinking"
+        }
+      ],
+      "benchmark": {
+        "quality": 93,
+        "speed": 600,
+        "adaptation_gain": 0,
+        "notes": "Quality score reflects top-tier reasoning benchmarks. Speed is slower than Flash due to deeper reasoning. adaptation_gain is 0 because the current adapter is an identity function \u2014 gains should be measured after implementing the listed adaptations."
+      },
+      "gemini_unique_features": {
+        "google_search_grounding": "Built-in web search tool that returns structured citations with groundingChunks (URIs + titles) and groundingSupports (text segments linked to sources). No equivalent in Claude or GPT without external tool integration. (source: https://ai.google.dev/gemini-api/docs/google-search)",
+        "native_structured_output": "Schema-enforced JSON generation via response_mime_type + response_schema at the API level \u2014 not prompt-based. Supports JSON Schema including anyOf, $ref, enum, format. Output is guaranteed syntactically valid. (source: https://ai.google.dev/gemini-api/docs/structured-output)",
+        "context_caching": "Pay-per-hour storage of long context for repeated queries at ~4x cost reduction. Unique economic model for long-context applications. (source: https://ai.google.dev/gemini-api/docs/long-context)",
+        "thinking_budget_control": "Fine-grained control over reasoning depth via thinkingBudget (token count) or thinkingLevel (minimal/low/medium/high). More granular than Claude's extended thinking. (source: https://ai.google.dev/gemini-api/docs/thinking)",
+        "multimodal_breadth": "Accepts text, images (3000/prompt), video (~45min), audio (~8.4hrs), and documents (1000 pages/file) in a single request. Broadest multimodal input of any major model. (source: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash)"
+      },
+      "refrase_notes": "Gemini 2.5 Pro is arguably the most powerful model with the most broken Refrase adapter. The current identity function means ZERO adaptations are applied, wasting Gemini's native structured output, dedicated system instruction field, and thinking budget control. The highest-impact fix is using response_mime_type + response_schema for JSON output instead of prompt-based JSON instructions \u2014 this alone could eliminate all parsing failures. The second priority is separating system instructions into the dedicated API parameter. Gemini's unique strengths (Google Search grounding, 1M context with caching, native multimodal) are all features that Claude and GPT lack natively, making Gemini adaptation particularly high-value. The structured output + function calling incompatibility on 2.5 is a real gotcha that the adapter must work around."
+    },
+    {
+      "id": "gemini-flash",
+      "name": "Gemini 2.5 Flash",
+      "provider": "Google",
+      "family": "gemini",
+      "model_id": "gemini-2.5-flash",
+      "official_url": "https://ai.google.dev/gemini-api/docs/models",
+      "context_window": 1048576,
+      "max_output_tokens": 65536,
+      "knowledge_cutoff": "January 2025",
+      "pricing": {
+        "input_per_1m": 0.3,
+        "output_per_1m": 2.5,
+        "thinking_tokens_per_1m": 2.5,
+        "batch_input_per_1m": 0.15,
+        "batch_output_per_1m": 1.25,
+        "notes": "No 200k pricing tier split for Flash (unlike Pro). Thinking tokens billed at output rate. Batch API is 50% off. Free tier available with rate limits. (source: Google AI pricing page, https://ai.google.dev/gemini-api/docs/pricing)"
+      },
+      "key_capabilities": [
+        "Same 1M token context window as Pro but at ~4x lower cost ($0.30 vs $1.25 per 1M input tokens), making it the cost-performance leader for long-context tasks (source: Google AI pricing, https://ai.google.dev/gemini-api/docs/pricing)",
+        "First Flash model with built-in thinking/reasoning \u2014 configurable thinking budget from 0 to 24,576 tokens, with the ability to fully disable thinking (thinkingBudget=0) unlike Pro which cannot disable it (source: Google AI docs, Thinking guide, https://ai.google.dev/gemini-api/docs/thinking)",
+        "Identical structured output support to Pro \u2014 response_mime_type='application/json' with response_schema, supporting JSON Schema with anyOf, $ref, enum, format, and property ordering (source: Google AI docs, Structured Output, https://ai.google.dev/gemini-api/docs/structured-output)",
+        "Fast inference: first token in 0.21-0.37 seconds, 163 tokens/second throughput \u2014 approximately 3x faster than Pro (source: Artificial Analysis benchmarks, https://artificialanalysis.ai/models/gemini-2-5-flash)",
+        "Free tier available \u2014 free of charge for input/output tokens with rate limits, plus 500 free Google Search grounding requests per day (source: Google AI pricing, https://ai.google.dev/gemini-api/docs/pricing)",
+        "Full multimodal input: text, code, images (up to 3,000 per prompt), audio (~8.4 hours), video (~45 min with audio), and documents (1,000 pages per file) (source: Vertex AI docs, Gemini 2.5 Flash, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash)",
+        "OpenAI API compatibility endpoint with reasoning_effort mapping to Gemini thinking levels (source: Google AI docs, OpenAI Compatibility, https://ai.google.dev/gemini-api/docs/openai)"
+      ],
+      "known_limitations": [
+        "Same structured output + function calling incompatibility as Pro on Gemini 2.5 \u2014 structured outputs fail when tool calls are present in message history (source: GitHub issue googleapis/python-genai#867, https://github.com/googleapis/python-genai/issues/867)",
+        "Shallower reasoning depth compared to Pro \u2014 thinking budget maxes at 24,576 tokens vs Pro's 32,768; default is dynamic allocation that may use fewer thinking tokens for complex tasks (source: Google AI docs, Thinking guide, https://ai.google.dev/gemini-api/docs/thinking)",
+        "Same JSON schema complexity limits as Pro \u2014 overly complex schemas with long names, deep nesting, many optional properties, or many enum values trigger InvalidArgument: 400 errors (source: Vertex AI docs, Structured Output, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output)",
+        "Less verbose by default than previous Gemini models \u2014 may produce overly terse responses for tasks requiring detailed explanation unless explicitly instructed (source: Vertex AI docs, Gemini 3 Prompting Guide, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)",
+        "System instructions do not prevent jailbreaks or information leakage \u2014 same limitation as all Gemini models (source: Vertex AI docs, System Instructions, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/system-instructions)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Identical to Pro \u2014 uses dedicated systemInstruction API parameter, not embedded in user messages. Can be a single string or array of strings. Processed before user prompts, persists across conversation turns. (source: Vertex AI docs, System Instructions, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/system-instructions)",
+        "recommended_practices": [
+          "Same XML-tag or Markdown-heading delimiter strategy as Pro \u2014 choose one format and use consistently within a prompt (source: Google AI docs, Prompt Design Strategies, https://ai.google.dev/gemini-api/docs/prompting-strategies)",
+          "For cost-sensitive applications, disable thinking entirely with thinkingBudget=0 for simple extraction/formatting tasks \u2014 Flash uniquely supports this unlike Pro (source: Google AI docs, Thinking guide, https://ai.google.dev/gemini-api/docs/thinking)",
+          "Use Flash's free tier for development/testing before scaling to paid tier \u2014 same API, same capabilities, just rate-limited (source: Google AI pricing, https://ai.google.dev/gemini-api/docs/pricing)",
+          "For structured output, use response_mime_type + response_schema instead of prompt-based JSON instructions \u2014 identical to Pro, but more cost-effective per token (source: Google AI docs, Structured Output, https://ai.google.dev/gemini-api/docs/structured-output)",
+          "Place questions at the END of long-context prompts for best retrieval accuracy (source: Google AI docs, Long Context guide, https://ai.google.dev/gemini-api/docs/long-context)",
+          "Include 3-5 few-shot examples with consistent formatting for extraction and classification tasks (source: Google AI docs, Prompt Design Strategies, https://ai.google.dev/gemini-api/docs/prompting-strategies)",
+          "Use context caching for repeated long-context queries \u2014 ~4x cost reduction, especially impactful given Flash's already-low per-token pricing (source: Google AI docs, Long Context guide, https://ai.google.dev/gemini-api/docs/long-context)",
+          "Keep temperature at default 1.0 \u2014 same recommendation as Pro, reasoning is optimized for this default (source: Vertex AI docs, Gemini 3 Prompting Guide, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)"
+        ],
+        "anti_patterns": [
+          "DO NOT lower temperature below 1.0 \u2014 same looping and degradation risk as Pro (source: Vertex AI docs, Gemini 3 Prompting Guide, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)",
+          "DO NOT duplicate JSON schema in prompt when using response_schema \u2014 same as Pro, use schema description fields only (source: Vertex AI docs, Structured Output, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output)",
+          "DO NOT use high thinking budgets for simple tasks \u2014 wastes tokens and money; Flash's ability to set thinkingBudget=0 should be leveraged for extraction/formatting (source: Google AI docs, Thinking guide, https://ai.google.dev/gemini-api/docs/thinking)",
+          "DO NOT combine structured output with function calling on 2.5 models \u2014 same incompatibility as Pro (source: GitHub issue googleapis/python-genai#867)",
+          "DO NOT use inconsistent formatting across few-shot examples (source: Google AI docs, Prompt Design Strategies, https://ai.google.dev/gemini-api/docs/prompting-strategies)",
+          "DO NOT place essential instructions at the end of very long prompts (source: Vertex AI docs, Gemini 3 Prompting Guide, https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)"
+        ],
+        "sources": [
+          "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+          "https://ai.google.dev/gemini-api/docs/structured-output",
+          "https://ai.google.dev/gemini-api/docs/thinking",
+          "https://ai.google.dev/gemini-api/docs/long-context",
+          "https://ai.google.dev/gemini-api/docs/pricing",
+          "https://ai.google.dev/gemini-api/docs/openai",
+          "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/system-instructions",
+          "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide",
+          "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output",
+          "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/gemini/2-5-flash"
+        ]
+      },
+      "task_strengths": [
+        "extraction",
+        "classification",
+        "structured-output",
+        "high-volume-processing",
+        "real-time-applications",
+        "cost-efficient-analysis",
+        "multimodal-understanding",
+        "code-generation"
+      ],
+      "cost_tier": "$",
+      "adaptations": [
+        {
+          "id": "gemini-system-instruction-separation",
+          "description": "Move system prompt content into the dedicated systemInstruction API parameter rather than prepending to user messages. Identical implementation to Pro.",
+          "priority": "critical",
+          "source": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/system-instructions"
+        },
+        {
+          "id": "gemini-structured-output-native",
+          "description": "When JSON output is needed, use Gemini's native response_mime_type='application/json' with response_schema instead of instructing JSON in the prompt. Remove in-prompt schema descriptions. Add propertyOrdering. Identical implementation to Pro.",
+          "priority": "critical",
+          "source": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/multimodal/control-generated-output"
+        },
+        {
+          "id": "gemini-xml-delimiters",
+          "description": "Structure prompt sections using XML-style tags (<context>, <task>, <constraints>, <examples>) or Markdown headings. Same as Pro.",
+          "priority": "high",
+          "source": "https://ai.google.dev/gemini-api/docs/prompting-strategies"
+        },
+        {
+          "id": "gemini-instruction-placement",
+          "description": "Place critical constraints at the BEGINNING. For long contexts, place the task/question at the END. Same as Pro.",
+          "priority": "high",
+          "source": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide"
+        },
+        {
+          "id": "gemini-thinking-budget-flash",
+          "description": "Flash-specific: set thinkingBudget=0 for simple extraction/formatting tasks to save cost. Use 1024-4096 for moderate analysis. Use 8192-24576 for complex reasoning. Flash can fully disable thinking unlike Pro.",
+          "priority": "high",
+          "source": "https://ai.google.dev/gemini-api/docs/thinking"
+        },
+        {
+          "id": "gemini-objective-constraints",
+          "description": "Replace subjective qualifiers with measurable constraints. Same as Pro.",
+          "priority": "medium",
+          "source": "https://ai.google.dev/gemini-api/docs/prompting-strategies"
+        },
+        {
+          "id": "gemini-temperature-default",
+          "description": "Do not set temperature below 1.0. Same as Pro.",
+          "priority": "medium",
+          "source": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide"
+        },
+        {
+          "id": "gemini-grounding-context",
+          "description": "For context-only tasks, add explicit grounding instruction. Same as Pro.",
+          "priority": "medium",
+          "source": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide"
+        }
+      ],
+      "benchmark": {
+        "quality": 87,
+        "speed": 200,
+        "adaptation_gain": 0,
+        "notes": "Quality nearly matches Pro at ~4x lower cost and ~3x faster speed. Speed score reflects Flash's fast inference (163 tok/s, 0.21-0.37s TTFT). adaptation_gain is 0 because the current adapter is an identity function."
+      },
+      "flash_vs_pro_differences": {
+        "thinking": "Flash can fully disable thinking (thinkingBudget=0); Pro cannot. Flash max budget is 24,576 tokens; Pro is 32,768. Pro's reasoning is deeper for complex tasks.",
+        "pricing": "Flash is ~4x cheaper per input token ($0.30 vs $1.25) and ~4x cheaper per output token ($2.50 vs $10.00). Flash has no 200k context tier split.",
+        "speed": "Flash delivers first token in 0.21-0.37s at 163 tok/s. Pro is ~3x slower.",
+        "quality": "Nearly identical for extraction and classification. Pro edges ahead for complex multi-step reasoning, mathematical proofs, and agentic planning.",
+        "free_tier": "Flash has a free tier with rate limits. Pro does not.",
+        "prompting": "Identical prompt patterns, system instruction format, and structured output API. The only prompting difference is thinking budget configuration."
+      },
+      "refrase_notes": "Gemini 2.5 Flash is the best cost-performance model available and the Refrase adapter does NOTHING to it. The same critical fixes needed for Pro apply here: (1) use native structured output via response_mime_type + response_schema instead of prompt-based JSON, (2) separate system instructions into the dedicated API parameter, (3) add XML tag delimiters for prompt structure. Flash additionally benefits from thinking budget control \u2014 setting thinkingBudget=0 for simple extraction could halve response time and cost with zero quality loss. Flash's free tier makes it ideal for development and testing. The adapter should detect task complexity and automatically set appropriate thinking budgets."
+    },
+    {
+      "id": "qwen3-235b",
+      "name": "Qwen3-235B-A22B",
+      "provider": "Alibaba Cloud (Qwen)",
+      "family": "qwen",
+      "official_url": "https://qwenlm.github.io/blog/qwen3/",
+      "model_card_url": "https://huggingface.co/Qwen/Qwen3-235B-A22B",
+      "release_date": "2025-04-29",
+      "context_window": 131072,
+      "max_output_tokens": 32768,
+      "pricing": {
+        "input_per_1m": 0.7,
+        "output_per_1m": 2.8,
+        "notes": "Alibaba Cloud DashScope international pricing. Thinking mode output: $8.40/1M tokens. Global (US Virginia) pricing lower: $0.287 input, $1.147 output (non-thinking), $2.868 (thinking). Open-weight Apache 2.0 \u2014 self-hosting eliminates API costs. (source: Alibaba Cloud Model Studio, Model Pricing page)"
+      },
+      "key_capabilities": [
+        "Mixture-of-Experts architecture: 235B total params, 22B activated per token, 128 experts with 8 activated per token (source: Hugging Face, Qwen3-235B-A22B Model Card)",
+        "Hybrid thinking mode: seamless switching between thinking mode (step-by-step reasoning in <think> blocks) and non-thinking mode (fast direct responses) via enable_thinking parameter or /think and /no_think soft switches (source: Qwen Blog, 'Qwen3: Think Deeper, Act Faster')",
+        "119 languages and dialects supported across Indo-European, Sino-Tibetan, Afro-Asiatic, and other language families (source: Qwen Blog, 'Qwen3: Think Deeper, Act Faster')",
+        "Trained on approximately 36 trillion tokens \u2014 nearly double Qwen2.5's 18 trillion \u2014 including synthetic math and code data (source: Qwen Blog, 'Qwen3: Think Deeper, Act Faster')",
+        "Extended context via YaRN rope scaling from 32K native to 131K tokens (source: Hugging Face, Qwen3-235B-A22B Model Card)",
+        "Strong agentic task performance: leading results on complex agent-based benchmarks among open-source models (source: Hugging Face, Qwen3-32B Model Card)",
+        "Open-weight under Apache 2.0 license enabling full commercial and research use (source: Qwen GitHub Repository)"
+      ],
+      "known_limitations": [
+        "Greedy decoding causes performance degradation and endless repetitions \u2014 must use sampling with recommended temperature settings (source: Hugging Face, Qwen3-235B-A22B Model Card)",
+        "YaRN static scaling applies a constant factor regardless of input length, which may negatively impact performance on shorter texts when enabled (source: Hugging Face, Qwen3-235B-A22B Model Card)",
+        "Higher presence_penalty values (above ~1.5) may cause language mixing in multilingual contexts (source: Hugging Face, Qwen3-235B-A22B Model Card)",
+        "Quantization below 4-bit causes significant performance degradation, especially in complex reasoning tasks, more pronounced than in previous Qwen generations (source: arXiv:2505.02214, 'An Empirical Study of Qwen3 Quantization')",
+        "Format-dependent reasoning: strong on pattern-matching benchmarks but weaker on strict logical forms like syllogisms (source: LogiEval benchmark analysis, emergentmind.com)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Standard chat format with system/user/assistant roles. System message sets context; user message contains the task. Thinking mode controlled via enable_thinking=True/False in chat_template_kwargs, or via /think and /no_think soft switches in user messages.",
+        "recommended_practices": [
+          "Use Temperature=0.6, TopP=0.95, TopK=20, MinP=0 for thinking mode; Temperature=0.7, TopP=0.8, TopK=20, MinP=0 for non-thinking mode (source: Hugging Face, Qwen3-235B-A22B Model Card)",
+          "Set max output to 32,768 tokens for most queries; use 38,912 for highly complex competition-level problems (source: Hugging Face, Qwen3-235B-A22B Model Card)",
+          "In multi-turn conversations, include only the final output in history \u2014 strip <think> blocks from previous turns (source: Hugging Face, Qwen3-235B-A22B Model Card)",
+          "Use thinking_budget parameter to cap reasoning token usage when latency is a concern (source: Alibaba Cloud Documentation, 'How to use deep thinking models')",
+          "Enable YaRN rope scaling only when input exceeds 32,768 tokens to avoid performance impact on shorter contexts (source: Hugging Face, Qwen3-235B-A22B Model Card)"
+        ],
+        "anti_patterns": [
+          "Never use greedy decoding (temperature=0) \u2014 causes endless repetitions and severe quality degradation (source: Hugging Face, Qwen3-235B-A22B Model Card)",
+          "Do not include thinking content (<think> blocks) in multi-turn conversation history \u2014 only include final output (source: Hugging Face, Qwen3-235B-A22B Model Card)",
+          "Avoid presence_penalty values above 1.5 in multilingual scenarios \u2014 triggers language mixing (source: Hugging Face, Qwen3-235B-A22B Model Card)"
+        ],
+        "sources": [
+          "https://huggingface.co/Qwen/Qwen3-235B-A22B",
+          "https://qwenlm.github.io/blog/qwen3/",
+          "https://www.alibabacloud.com/help/en/model-studio/deep-thinking",
+          "https://arxiv.org/abs/2505.09388"
+        ]
+      },
+      "task_strengths": [
+        "complex_reasoning",
+        "math",
+        "coding",
+        "multilingual",
+        "translation",
+        "agentic_tasks",
+        "creative_writing"
+      ],
+      "cost_tier": "$$",
+      "adaptations": [
+        "Enable thinking mode for complex reasoning, math, and coding tasks",
+        "Disable thinking mode for simple Q&A, translation, and low-latency needs",
+        "Use /think and /no_think soft switches for per-turn control in multi-turn conversations",
+        "Set thinking_budget to limit reasoning tokens when cost or latency is constrained"
+      ],
+      "benchmark": {
+        "quality": null,
+        "speed": null,
+        "adaptation_gain": null
+      },
+      "refrase_notes": "Qwen3-235B-A22B is the flagship MoE model from Alibaba's Qwen team. Its hybrid thinking mode is a first-class feature \u2014 unlike models where reasoning is bolted on, Qwen3 was trained from the ground up to switch between deep reasoning and fast responses. The /think and /no_think soft switches make it uniquely controllable at the prompt level without API parameter changes. At 22B activated parameters per token, it delivers frontier-class reasoning at a fraction of the compute cost of dense 200B+ models. The 119-language support makes it the strongest multilingual open-weight model available. Key trade-off: the MoE architecture requires significant VRAM for self-hosting despite low per-token compute."
+    },
+    {
+      "id": "qwen3-32b",
+      "name": "Qwen3-32B",
+      "provider": "Alibaba Cloud (Qwen)",
+      "family": "qwen",
+      "official_url": "https://qwenlm.github.io/blog/qwen3/",
+      "model_card_url": "https://huggingface.co/Qwen/Qwen3-32B",
+      "release_date": "2025-04-29",
+      "context_window": 131072,
+      "max_output_tokens": 32768,
+      "pricing": {
+        "input_per_1m": 0.16,
+        "output_per_1m": 0.64,
+        "notes": "Alibaba Cloud DashScope international pricing. Same price for thinking and non-thinking modes. Open-weight Apache 2.0 \u2014 widely available on Groq ($0.29/1M input), Together AI, and other inference providers at varying prices. Self-hosting eliminates API costs. (source: Alibaba Cloud Model Studio, Model Pricing page)"
+      },
+      "key_capabilities": [
+        "Dense 32.8B parameter model with 64 layers and grouped-query attention (64 Q heads, 8 KV heads) (source: Hugging Face, Qwen3-32B Model Card)",
+        "Hybrid thinking mode identical to 235B: enable_thinking parameter plus /think and /no_think soft switches (source: Hugging Face, Qwen3-32B Model Card)",
+        "Surpasses QwQ-32B in thinking mode and Qwen2.5-Instruct in non-thinking mode \u2014 best-in-class at 32B scale (source: Hugging Face, Qwen3-32B Model Card)",
+        "100+ languages and dialects with strong multilingual instruction following and translation (source: Hugging Face, Qwen3-32B Model Card)",
+        "Extended context from 32K native to 131K tokens via YaRN rope scaling with factor 4.0 (source: Hugging Face, Qwen3-32B Model Card)",
+        "Optimized for creative writing, role-playing, and multi-turn dialogues based on human preference alignment (source: Hugging Face, Qwen3-32B Model Card)",
+        "Open-weight Apache 2.0 license \u2014 runnable locally on consumer hardware with quantization (source: Qwen GitHub Repository)"
+      ],
+      "known_limitations": [
+        "Greedy decoding causes performance degradation and repetition loops in thinking mode \u2014 sampling required (source: Hugging Face, Qwen3-32B Model Card)",
+        "YaRN scaling is static and may negatively impact shorter text performance when enabled; only activate for inputs exceeding 32K tokens (source: Hugging Face, Qwen3-32B Model Card)",
+        "Thinking content (<think> blocks) must not be included in multi-turn conversation history \u2014 implementation must strip them (source: Hugging Face, Qwen3-32B Model Card)",
+        "When enable_thinking=True, model always outputs <think> blocks (may be empty if soft-switched to non-thinking), requiring consistent parsing logic (source: Hugging Face, Qwen3-32B Model Card)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Standard chat format with system/user/assistant roles. Thinking mode controlled via enable_thinking=True/False or /think and /no_think soft switches in user messages. Identical prompt interface to Qwen3-235B.",
+        "recommended_practices": [
+          "Use Temperature=0.6, TopP=0.95, TopK=20, MinP=0 for thinking mode; Temperature=0.7, TopP=0.8, TopK=20, MinP=0 for non-thinking mode (source: Hugging Face, Qwen3-32B Model Card)",
+          "Set max output to 32,768 tokens for most queries; 38,912 for competition-level problems (source: Hugging Face, Qwen3-32B Model Card)",
+          "Strip <think> blocks from conversation history in multi-turn scenarios (source: Hugging Face, Qwen3-32B Model Card)",
+          "Only enable YaRN when input exceeds 32,768 tokens (source: Hugging Face, Qwen3-32B Model Card)",
+          "For self-hosted deployment, use SGLang >= 0.4.6.post1 or vLLM >= 0.8.5 with --enable-reasoning flag (source: Hugging Face, Qwen3-32B Model Card)"
+        ],
+        "anti_patterns": [
+          "Never use greedy decoding (temperature=0) \u2014 causes endless repetitions (source: Hugging Face, Qwen3-32B Model Card)",
+          "Do not include <think> blocks in conversation history for multi-turn chats (source: Hugging Face, Qwen3-32B Model Card)",
+          "Avoid enabling YaRN for short contexts \u2014 static scaling factor degrades performance on texts under 32K tokens (source: Hugging Face, Qwen3-32B Model Card)"
+        ],
+        "sources": [
+          "https://huggingface.co/Qwen/Qwen3-32B",
+          "https://qwenlm.github.io/blog/qwen3/",
+          "https://arxiv.org/abs/2505.09388"
+        ]
+      },
+      "task_strengths": [
+        "complex_reasoning",
+        "math",
+        "coding",
+        "multilingual",
+        "creative_writing",
+        "role_playing",
+        "multi_turn_dialogue",
+        "agentic_tasks"
+      ],
+      "cost_tier": "$",
+      "adaptations": [
+        "Enable thinking mode for complex reasoning, math, and coding tasks",
+        "Disable thinking mode for simple Q&A, translation, and low-latency needs",
+        "Use /think and /no_think soft switches for per-turn control",
+        "Widely available on budget inference providers (Groq, Together AI) for cost optimization"
+      ],
+      "benchmark": {
+        "quality": null,
+        "speed": null,
+        "adaptation_gain": null
+      },
+      "refrase_notes": "Qwen3-32B is the sweet spot of the Qwen3 lineup \u2014 a dense model that runs on a single GPU (quantized) while delivering reasoning that surpasses the previous-generation QwQ-32B thinking model. It shares the same hybrid thinking architecture as the 235B flagship, making prompt patterns fully portable between the two. For Refrase, this is the ideal default recommendation for users who want strong multilingual reasoning without premium pricing. The dense architecture avoids MoE routing complexity, making latency more predictable. At $0.16/1M input tokens on DashScope (and even cheaper on third-party providers), it offers exceptional value."
+    },
+    {
+      "id": "deepseek-v3",
+      "name": "DeepSeek V3 (deepseek-chat)",
+      "provider": "DeepSeek",
+      "family": "deepseek",
+      "official_url": "https://api-docs.deepseek.com/",
+      "model_card_url": "https://huggingface.co/deepseek-ai/DeepSeek-V3",
+      "release_date": "2024-12-26",
+      "context_window": 128000,
+      "max_output_tokens": 8192,
+      "pricing": {
+        "input_per_1m": 0.28,
+        "output_per_1m": 0.42,
+        "notes": "DeepSeek API pricing for deepseek-chat (V3.2 non-thinking). Cache hit: $0.028/1M input tokens (90% discount). Reasoner (thinking mode): same input pricing, output $0.42/1M for final + reasoning tokens. Extremely aggressive pricing \u2014 among the cheapest frontier-class models available. (source: DeepSeek API Docs, Models & Pricing page)"
+      },
+      "key_capabilities": [
+        "Mixture-of-Experts architecture: 671B total parameters, 37B activated per token, with 256 routed experts plus 1 shared expert (8 experts activated per token) (source: arXiv:2412.19437, DeepSeek-V3 Technical Report)",
+        "Multi-head Latent Attention (MLA): compresses KV cache for efficient long-context processing, validated in DeepSeek-V2 (source: arXiv:2412.19437, DeepSeek-V3 Technical Report)",
+        "Auxiliary-loss-free load balancing: pioneering strategy using learned bias terms per expert, avoiding quality degradation from traditional auxiliary losses (source: arXiv:2412.19437, DeepSeek-V3 Technical Report)",
+        "Multi-token prediction training objective for stronger downstream performance (source: arXiv:2412.19437, DeepSeek-V3 Technical Report)",
+        "OpenAI-compatible API format: drop-in replacement using OpenAI SDK with base_url change (source: DeepSeek API Docs, 'Your First API Call')",
+        "Context caching on disk: repeated long prefixes are processed faster and cheaper with 90% cache-hit discount (source: DeepSeek API Docs, Models & Pricing page)",
+        "V3.2 supports thinking mode (deepseek-reasoner) with tool-use integration \u2014 first model to integrate reasoning directly into tool calls (source: DeepSeek API Docs, 'DeepSeek-V3.2 Release')"
+      ],
+      "known_limitations": [
+        "Default max output is 4K tokens (expandable to 8K) for deepseek-chat; reasoner mode defaults to 32K (max 64K) \u2014 relatively limited compared to other frontier models (source: DeepSeek API Docs, Models & Pricing page)",
+        "Hallucination rate of approximately 3.9% on Vectara benchmark \u2014 lower than R1 but still measurable (source: Vectara Research, 'DeepSeek-R1 hallucinates more than DeepSeek-V3')",
+        "Safety alignment concerns: found to be less aligned than comparable models, with higher risk of producing harmful content and lower jailbreak resistance scores (source: Microsoft Research, safety benchmarking reports via TechTarget)",
+        "Content filtering reflects Chinese regulatory requirements: may refuse politically sensitive questions about China while answering analogous questions about other countries (source: Multiple independent tester reports, TechTarget)",
+        "All data processed through DeepSeek API is hosted on servers in mainland China, subject to Chinese legal jurisdiction (source: NordVPN security analysis, 'Is DeepSeek safe to use?')"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Standard OpenAI-compatible chat format with system/user/assistant roles. System prompt is strongly respected \u2014 use it to lock in behavior, role, and output format. JSON mode requires both response_format={'type': 'json_object'} AND mentioning 'JSON' in the prompt text.",
+        "recommended_practices": [
+          "Use system prompt to define role and behavior \u2014 V3 responds well to clear, concise, consistent system messages (source: datastudios.org, 'DeepSeek Prompting Techniques')",
+          "Place static data (documentation, codebases) at the beginning of the prompt to leverage disk-based context caching for faster and cheaper processing (source: skywork.ai, 'Best Prompts for DeepSeek-V3.2-Exp')",
+          "Break prompts into digestible blocks: separate background info, task description, and constraints into distinct messages (source: skywork.ai, 'How to Optimize Prompts for DeepSeek-V3.2-Exp')",
+          "For JSON output, set response_format to json_object AND include the word 'JSON' in the prompt text (source: datastudios.org, 'DeepSeek Prompting Techniques')",
+          "Use few-shot examples and persona adoption for complex tasks \u2014 V3 excels at structured outputs and following complex system instructions (source: datastudios.org, 'DeepSeek Prompting Techniques')"
+        ],
+        "anti_patterns": [
+          "Do not omit 'JSON' from prompt text when using json_object response format \u2014 model may not comply without explicit mention (source: datastudios.org, 'DeepSeek Prompting Techniques')",
+          "Avoid rewriting role instructions every turn \u2014 use a consistent system message and vary only user messages (source: skywork.ai, 'Best Prompts for DeepSeek-V3.2-Exp')",
+          "Do not rely on DeepSeek for safety-critical applications without additional guardrails \u2014 lower alignment scores compared to peers (source: Microsoft Research, safety benchmarking)"
+        ],
+        "sources": [
+          "https://api-docs.deepseek.com/",
+          "https://api-docs.deepseek.com/quick_start/pricing",
+          "https://api-docs.deepseek.com/news/news251201",
+          "https://arxiv.org/abs/2412.19437",
+          "https://skywork.ai/blog/how-to-optimize-prompts-for-deepseek-v3-2-exp/",
+          "https://www.datastudios.org/post/deepseek-prompting-techniques-strategies-limits-best-practices-etc"
+        ]
+      },
+      "task_strengths": [
+        "coding",
+        "structured_output",
+        "math",
+        "complex_reasoning",
+        "tool_use",
+        "long_context"
+      ],
+      "cost_tier": "$",
+      "adaptations": [
+        "Use deepseek-chat for non-thinking mode (fast, low-cost general tasks)",
+        "Use deepseek-reasoner for thinking mode (complex reasoning, math, coding)",
+        "Leverage context caching by placing stable reference material at prompt start",
+        "For tool-use tasks, prefer V3.2 which integrates thinking into tool calls natively"
+      ],
+      "benchmark": {
+        "quality": null,
+        "speed": null,
+        "adaptation_gain": null
+      },
+      "refrase_notes": "DeepSeek V3 is the price-performance disruptor of the frontier model landscape. At $0.28/1M input tokens with 90% cache-hit discounts, it undercuts nearly every competitor while delivering 671B-parameter MoE quality. The OpenAI-compatible API makes migration trivial. However, Refrase users should be aware of two significant caveats: (1) the data jurisdiction issue \u2014 all API traffic routes through mainland China, which may be a dealbreaker for regulated industries; and (2) the relatively low max output token limit (8K for chat mode) constrains long-form generation tasks. The architectural innovations (MLA, auxiliary-loss-free balancing, FP8 training) are genuinely novel and well-documented in the technical report. For cost-sensitive users who can work within the output constraints and data residency requirements, it is hard to beat."
+    },
+    {
+      "id": "mistral-large",
+      "name": "Mistral Large 3",
+      "provider": "Mistral AI",
+      "family": "mistral",
+      "official_url": "https://docs.mistral.ai/models/mistral-large-3-25-12",
+      "model_card_url": "https://huggingface.co/mistralai/Mistral-Large-3-675B-Instruct-2512",
+      "release_date": "2025-12-02",
+      "context_window": 262144,
+      "max_output_tokens": 262144,
+      "pricing": {
+        "input_per_1m": 0.5,
+        "output_per_1m": 1.5,
+        "notes": "Mistral API (La Plateforme) pricing. Also available on AWS Bedrock, Azure, and GCP at provider-specific pricing. Open-weight Apache 2.0 \u2014 self-hosting eliminates API costs but requires 8xH200 or equivalent for FP8 deployment. (source: Mistral Docs, Mistral Large 3 page)"
+      },
+      "key_capabilities": [
+        "Granular Mixture-of-Experts: 675B total parameters with 41B active (Language model: 673B/39B active, Vision encoder: 2.5B) (source: Hugging Face, Mistral-Large-3-675B-Instruct-2512 Model Card)",
+        "256K context window \u2014 one of the largest available, supporting extensive document processing and complex agentic workflows (source: Mistral Docs, Mistral Large 3 page)",
+        "Multimodal: native vision capabilities for image analysis with up to 10 images per prompt (source: Hugging Face, Mistral-Large-3-675B-Instruct-2512 Model Card)",
+        "Native function calling and structured JSON output \u2014 best-in-class agentic capabilities with tool-use support (source: Mistral Docs, Mistral Large 3 page)",
+        "Broad multilingual support: English, French, Spanish, German, Italian, Portuguese, Dutch, Chinese, Japanese, Korean, Arabic, and more (source: Mistral Docs, Mistral Large 3 page)",
+        "Open-weight Apache 2.0 license \u2014 fully open-sourced, marking Mistral's first frontier-class model under permissive license (source: Hugging Face, Mistral-Large-3-675B-Instruct-2512 Model Card)",
+        "Fill-in-the-Middle (FIM) for code generation, OCR with structured annotations, and audio transcription (source: Mistral Docs, Mistral Large 3 page)",
+        "Trained from scratch on ~3,000 H200 GPUs \u2014 frontier-level training compute (source: Hugging Face, Mistral-Large-3-675B-Instruct-2512 Model Card)"
+      ],
+      "known_limitations": [
+        "Not a dedicated reasoning model \u2014 specialized reasoning models (like Magistral or Claude with extended thinking) may outperform on pure reasoning tasks (source: Hugging Face, Mistral-Large-3-675B-Instruct-2512 Model Card)",
+        "Lags behind vision-first models on multimodal-optimized benchmarks despite supporting vision (source: Hugging Face, Mistral-Large-3-675B-Instruct-2512 Model Card)",
+        "Extremely resource-intensive deployment: requires 8xH200 (FP8) or 8xH100/A100 (NVFP4) for inference (source: Hugging Face, Mistral-Large-3-675B-Instruct-2512 Model Card)",
+        "Image aspect ratio sensitivity: best performance near 1:1 width-to-height ratio (source: Hugging Face, Mistral-Large-3-675B-Instruct-2512 Model Card)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Standard chat format with system/user/assistant roles. System messages define environment and guidance. Mistral recommends defining roles explicitly: 'You are a [role], your task is to [task].' Supports Markdown and XML-style tags for structured instructions.",
+        "recommended_practices": [
+          "Use temperature < 0.1 for production/daily-driver use cases; higher temperature for creative tasks (source: Hugging Face, Mistral-Large-3-675B-Instruct-2512 Model Card)",
+          "Define roles explicitly with 'You are a [role], your task is to [task]' framing (source: Mistral Docs, Prompting Capabilities)",
+          "Organize instructions hierarchically with clear sections and subsections using Markdown or XML tags (source: Mistral Docs, Prompting Capabilities)",
+          "Use few-shot prompting with example user-assistant exchanges for format-critical tasks (source: Mistral Docs, Prompting Capabilities)",
+          "Keep tool definitions minimal \u2014 avoid overloading the model with too many function definitions (source: Hugging Face, Mistral-Large-3-675B-Instruct-2512 Model Card)",
+          "Treat prompts like code: iterate, test, and evaluate changes systematically (source: Mistral Docs, Prompting Capabilities)"
+        ],
+        "anti_patterns": [
+          "Avoid vague quantifiers ('too long', 'many', 'few') \u2014 use objective measurements (source: Mistral Docs, Prompting Capabilities)",
+          "Never use ambiguous descriptors like 'interesting' or 'better' without precise definitions (source: Mistral Docs, Prompting Capabilities)",
+          "Do not use contradictory rules \u2014 use decision trees for conditional logic (source: Mistral Docs, Prompting Capabilities)",
+          "Avoid asking the model to count characters or items \u2014 provide counts directly (source: Mistral Docs, Prompting Capabilities)",
+          "Prefer worded scales ('Very Low', 'Good') over numeric scales (1-5) for evaluation tasks (source: Mistral Docs, Prompting Capabilities)"
+        ],
+        "sources": [
+          "https://docs.mistral.ai/models/mistral-large-3-25-12",
+          "https://docs.mistral.ai/capabilities/completion/prompting_capabilities",
+          "https://huggingface.co/mistralai/Mistral-Large-3-675B-Instruct-2512"
+        ]
+      },
+      "task_strengths": [
+        "agentic_tasks",
+        "function_calling",
+        "structured_output",
+        "long_context",
+        "multilingual",
+        "coding",
+        "document_understanding",
+        "vision"
+      ],
+      "cost_tier": "$$",
+      "adaptations": [
+        "Use low temperature (< 0.1) for tool-use and structured output tasks",
+        "Leverage 256K context for long document RAG and multi-document analysis",
+        "Use native function calling with --tool-call-parser mistral for agentic workflows",
+        "Deploy with speculative decoding (Eagle) for 2-3x throughput improvement"
+      ],
+      "benchmark": {
+        "quality": null,
+        "speed": null,
+        "adaptation_gain": null
+      },
+      "refrase_notes": "Mistral Large 3 is the European frontier contender and the first truly open-weight model at the 675B scale. Its 256K context window is a standout feature, tied with Claude for the largest commercially available context. The function calling and structured output support is native and well-tested \u2014 Mistral has invested heavily in agentic capabilities. For Refrase users in regulated European industries, Mistral offers a GDPR-friendly alternative to US and Chinese providers. The Apache 2.0 licensing is a strategic differentiator: this is the only 675B-class model you can legally self-host and modify. The anti-patterns guidance from Mistral's docs (avoid vague quantifiers, prefer worded scales) is unusually practical and directly applicable to Refrase prompt optimization."
+    },
+    {
+      "id": "magistral",
+      "name": "Magistral Medium 1.2",
+      "provider": "Mistral AI",
+      "family": "mistral",
+      "official_url": "https://docs.mistral.ai/models/magistral-medium-1-2-25-09",
+      "model_card_url": null,
+      "release_date": "2025-09-18",
+      "context_window": 128000,
+      "max_output_tokens": 131072,
+      "pricing": {
+        "input_per_1m": 2.0,
+        "output_per_1m": 5.0,
+        "notes": "Mistral API (La Plateforme) 'Premier' tier pricing. Not open-weight \u2014 proprietary model. Magistral Small 1.2 is available as a cheaper open-weight alternative at $0.50 input / $1.50 output. (source: Mistral Docs, Models overview page)"
+      },
+      "key_capabilities": [
+        "Frontier-class reasoning model with dedicated [THINK] and [/THINK] tokens for chain-of-thought traces (source: apidog.com, 'Magistral Small 1.2 and Magistral Medium 1.2 are here')",
+        "Multimodal: visual encoder for image analysis and understanding (source: Mistral Docs, Magistral Medium 1.2 page)",
+        "Native function calling, structured outputs, and agent conversations with built-in tools (source: Mistral Docs, Magistral Medium 1.2 page)",
+        "Document AI: OCR with structured annotations, bounding box extraction, and document Q&A (source: Mistral Docs, Magistral Medium 1.2 page)",
+        "Audio transcription with timestamps (source: Mistral Docs, Magistral Medium 1.2 page)",
+        "Fill-in-the-Middle (FIM) for code generation and predicted outputs (source: Mistral Docs, Magistral Medium 1.2 page)",
+        "25+ language support including French, German, Arabic, Japanese, and Chinese (source: apidog.com, 'Magistral Small 1.2 and Magistral Medium 1.2 are here')"
+      ],
+      "known_limitations": [
+        "Proprietary model \u2014 weights not publicly available, no self-hosting option (unlike Mistral Large 3 and Magistral Small) (source: Mistral Docs, Models overview page)",
+        "Context window optimal performance under 40K tokens despite 128K maximum \u2014 quality may degrade at longer contexts (source: apidog.com, 'Magistral Small 1.2 and Magistral Medium 1.2 are here')",
+        "Exact parameter count and architecture undisclosed \u2014 limited transparency compared to open-weight alternatives (source: apidog.com, 'Magistral Small 1.2 and Magistral Medium 1.2 are here')",
+        "Premium pricing ($2/1M input, $5/1M output) \u2014 4x the cost of Mistral Large 3 input and 3.3x output, reflecting reasoning compute overhead (source: Mistral Docs, Models overview page)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Standard chat format with system/user/assistant roles. Reasoning traces enclosed in [THINK] and [/THINK] tokens for developer inspection. API model name: magistral-medium-2509 or magistral-medium-latest.",
+        "recommended_practices": [
+          "Use temperature=0.7, top_p=0.95, max_tokens=131072 as recommended sampling parameters (source: apidog.com, 'Magistral Small 1.2 and Magistral Medium 1.2 are here')",
+          "Leverage [THINK]/[/THINK] tokens to inspect reasoning traces for debugging and quality assurance (source: apidog.com, 'Magistral Small 1.2 and Magistral Medium 1.2 are here')",
+          "Use for reasoning-intensive tasks where chain-of-thought quality matters more than raw speed (source: Mistral Docs, Models overview page)",
+          "Apply the same Mistral prompt engineering best practices: explicit role definition, hierarchical structure, Markdown/XML formatting (source: Mistral Docs, Prompting Capabilities)",
+          "Keep context under 40K tokens for optimal reasoning quality (source: apidog.com, 'Magistral Small 1.2 and Magistral Medium 1.2 are here')"
+        ],
+        "anti_patterns": [
+          "Do not use for simple tasks where reasoning overhead is unnecessary \u2014 Mistral Large 3 or smaller models are more cost-effective (source: Mistral Docs, Models overview page)",
+          "Avoid same anti-patterns as Mistral Large 3: vague quantifiers, ambiguous descriptors, contradictory rules, numeric scales (source: Mistral Docs, Prompting Capabilities)",
+          "Do not exceed 40K tokens of context if reasoning quality is critical \u2014 performance is optimal below this threshold (source: apidog.com, 'Magistral Small 1.2 and Magistral Medium 1.2 are here')"
+        ],
+        "sources": [
+          "https://docs.mistral.ai/models/magistral-medium-1-2-25-09",
+          "https://docs.mistral.ai/getting-started/models",
+          "https://docs.mistral.ai/capabilities/completion/prompting_capabilities",
+          "https://apidog.com/blog/magistral-small-1-2-magistral-medium-1-2/"
+        ]
+      },
+      "task_strengths": [
+        "complex_reasoning",
+        "math",
+        "coding",
+        "function_calling",
+        "document_understanding",
+        "vision",
+        "structured_output"
+      ],
+      "cost_tier": "$$$",
+      "adaptations": [
+        "Use for tasks requiring deep reasoning with transparent chain-of-thought",
+        "Inspect [THINK]/[/THINK] tokens to validate reasoning quality",
+        "Consider Magistral Small 1.2 (open-weight, $0.50/$1.50) for budget-friendly reasoning tasks",
+        "Pair with Mistral Large 3 for a routing strategy: Magistral for reasoning, Large 3 for general tasks"
+      ],
+      "benchmark": {
+        "quality": null,
+        "speed": null,
+        "adaptation_gain": null
+      },
+      "refrase_notes": "Magistral Medium 1.2 is Mistral's answer to the reasoning model trend \u2014 a dedicated chain-of-thought model with explicit [THINK]/[/THINK] tokens that make reasoning traces inspectable and debuggable. This transparency is a significant advantage for Refrase's prompt optimization workflow: users can see exactly how the model reasons and tune prompts to guide that reasoning. The 131K max output tokens is generous for reasoning-heavy tasks. The key limitation is the proprietary nature \u2014 unlike Mistral Large 3, this model cannot be self-hosted, locking users into Mistral's API. The 40K optimal context threshold is notably lower than the 128K advertised maximum, so Refrase should flag this discrepancy in recommendations. At $2/$5 per million tokens, it sits in the premium tier \u2014 best reserved for high-value reasoning tasks where the thinking trace visibility justifies the cost premium over alternatives."
+    },
+    {
+      "id": "llama-3.1-405b",
+      "name": "Llama 3.1 405B Instruct",
+      "provider": "Meta",
+      "family": "llama",
+      "official_url": "https://huggingface.co/meta-llama/Llama-3.1-405B-Instruct",
+      "context_window": 128000,
+      "max_output_tokens": 4096,
+      "pricing": {
+        "input_per_1m": 5.33,
+        "output_per_1m": 16.0,
+        "notes": "Open-weight model; pricing varies by provider. Azure: $5.33/$16.00. OpenRouter/Together AI: often $1-3 input, $1-5 output. Self-hosted: infrastructure cost only. (source: Azure pricing, OpenRouter)"
+      },
+      "key_capabilities": [
+        "128K context window for extended documents (source: Hugging Face, Model Card)",
+        "Multilingual support: English, German, French, Italian, Portuguese, Hindi, Spanish, Thai (source: Hugging Face, Model Card)",
+        "Native tool calling with ipython role for multi-step tool interactions (source: Meta, Prompt Format Docs)",
+        "Strong code generation: 89.0% HumanEval pass@1 (source: Hugging Face, Model Card)",
+        "Mathematical reasoning: 96.8% GSM-8K CoT, 73.8% MATH CoT (source: Hugging Face, Model Card)",
+        "JSON Mode and JSON Schema Mode for structured outputs (source: Meta, Prompt Engineering Guide)",
+        "Synthetic data generation capability (source: Hugging Face, Model Card)",
+        "Open-weight with Llama 3.1 Community License allowing commercial use (source: Hugging Face, Model Card)"
+      ],
+      "known_limitations": [
+        "Max output tokens capped at ~4,096 per generation; significantly less than closed models (source: Hugging Face Discussion #6, binary search testing)",
+        "Training data cutoff December 2023 \u2014 no knowledge of events after (source: Hugging Face, Model Card)",
+        "No native API-level JSON mode enforcement \u2014 structured output requires prompt-level instruction, not guaranteed schema adherence (source: Meta, Prompt Engineering Guide)",
+        "Over-splitting complex tasks into sub-prompts causes model to second-guess connections between intermediate outputs (source: Community testing, Toxigon)",
+        "Limited performance in non-supported languages beyond the 8 listed (source: Hugging Face, Model Card)",
+        "Requires system-level safeguards \u2014 not designed for deployment in isolation (source: Hugging Face, Model Card)",
+        "405B parameter count demands substantial GPU infrastructure for self-hosting (source: Hugging Face, Model Card)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{system_prompt}<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{user_message}<|eot_id|><|start_header_id|>assistant<|end_header_id|>",
+        "recommended_practices": [
+          "Use special tokens for role demarcation: <|begin_of_text|>, <|start_header_id|>{role}<|end_header_id|>, <|eot_id|> (source: Meta, Prompt Format Docs)",
+          "Combine role + rules + restrictions + explicit instructions + examples in system prompt for best results (source: Meta, Prompt Engineering Guide)",
+          "Use chain-of-thought prompting for complex reasoning rather than splitting into many sub-prompts (source: Meta, Prompt Engineering Guide)",
+          "For tool calling, add 'Environment: ipython' to system prompt to enable <|eom_id|> for multi-step tool interactions (source: Meta, Prompt Format Docs)",
+          "Provide tool definitions in the user prompt (not system prompt) \u2014 this matches training format for built-in JSON tool calling (source: Meta, Prompt Format Docs)",
+          "Use the ipython role (not tool role) for returning tool execution results to the model (source: Meta, Prompt Format Docs)",
+          "For JSON output, explicitly instruct the model with role constraints like 'You are a robot that only outputs JSON' (source: Meta, Prompt Engineering Guide)"
+        ],
+        "anti_patterns": [
+          "Do NOT chain prompts into too many sub-prompts for complex tasks \u2014 model second-guesses intermediate output relevance (source: Community testing, reported regression from Llama 2 patterns)",
+          "Do NOT use generic system prompts without role/rules/restrictions structure \u2014 Llama 3.1 responds best to well-structured system context (source: Meta, Prompt Engineering Guide)",
+          "Do NOT assume API-level JSON mode exists like OpenAI \u2014 structured output requires prompt-level enforcement and may not guarantee valid JSON (source: Meta documentation, community reports)",
+          "Do NOT omit the <|begin_of_text|> token \u2014 it initializes the conversation context (source: Meta, Prompt Format Docs)",
+          "Do NOT use 'tool' role for tool results \u2014 use 'ipython' role instead, as this is how the model was trained (source: Meta, Prompt Format Docs)"
+        ],
+        "sources": [
+          "https://huggingface.co/meta-llama/Llama-3.1-405B-Instruct",
+          "https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_1/",
+          "https://www.llama.com/docs/how-to-guides/prompting/",
+          "https://github.com/meta-llama/llama-models/blob/main/models/llama3_1/prompt_format.md"
+        ]
+      },
+      "task_strengths": [
+        "General knowledge and reasoning (MMLU 87.3%, ARC-Challenge 96.1%)",
+        "Code generation across multiple languages (HumanEval 89.0%)",
+        "Mathematical problem solving (GSM-8K 96.8%)",
+        "Multi-step tool calling with ipython role",
+        "Multilingual dialogue across 8 languages",
+        "Synthetic data generation for training other models"
+      ],
+      "cost_tier": "$$$",
+      "adaptations": [
+        "Use special token format instead of markdown role headers \u2014 Llama uses <|start_header_id|>{role}<|end_header_id|> not ### System",
+        "Enforce JSON output via prompt instruction since no API-level JSON mode \u2014 add explicit role constraint and output format specification",
+        "Size-based adaptation: 405B can handle complex multi-step reasoning in single prompt; smaller variants (70B/8B) may need task decomposition",
+        "For tool calling, structure prompts with ipython role and Environment: ipython system instruction",
+        "Prefer numbered step format for complex instructions \u2014 Llama 3.1 follows explicit step sequences well",
+        "Keep system prompts structured with clear sections: role definition, rules/constraints, task instructions, output format"
+      ],
+      "benchmark": {
+        "quality": null,
+        "speed": null,
+        "adaptation_gain": null
+      },
+      "refrase_notes": "The largest open-weight model in the Llama 3.1 family. Critical difference from GPT/Claude: uses special token-based prompt formatting (<|begin_of_text|>, <|start_header_id|>, etc.) rather than simple role-message pairs. The ipython role for tool calling is unique to Llama. No native API-level JSON mode \u2014 must enforce structured output via prompt engineering. The 4,096 max output token limit is significantly lower than most closed models. Open-weight nature means prompting behavior varies across hosting providers and quantization levels. When self-hosted, there are no API-level guardrails \u2014 all safety and format enforcement must come from the prompt itself."
+    },
+    {
+      "id": "kimi-k2",
+      "name": "Kimi K2 Instruct",
+      "provider": "Moonshot AI",
+      "family": "kimi",
+      "official_url": "https://huggingface.co/moonshotai/Kimi-K2-Instruct",
+      "context_window": 128000,
+      "max_output_tokens": 8192,
+      "pricing": {
+        "input_per_1m": 0.55,
+        "output_per_1m": 2.2,
+        "notes": "Cache hit pricing reduces input to ~$0.15/M (75% discount). K2 0905 'exacto' variant: $0.39/$1.90. Thinking variant: $0.47/$2.00. (source: pricepertoken.com, OpenRouter)"
+      },
+      "key_capabilities": [
+        "1 trillion total parameters with only 32B activated per token via 384-expert MoE (source: Hugging Face, Model Card)",
+        "State-of-the-art agentic intelligence with native tool calling and autonomous problem-solving (source: Hugging Face, Model Card)",
+        "Strong coding: LiveCodeBench v6 53.7% SOTA, SWE-bench Verified 65.8% single attempt (source: Hugging Face, Model Card)",
+        "Mathematical reasoning: MATH-500 97.4% SOTA, AIME 2024 69.6% SOTA (source: Hugging Face, Model Card)",
+        "General knowledge: MMLU 89.5%, MMLU-Redux 92.7% SOTA (source: Hugging Face, Model Card)",
+        "Instruction following: IFEval 89.8% Prompt Strict SOTA (source: Hugging Face, Model Card)",
+        "OpenAI and Anthropic API compatible \u2014 drop-in replacement (source: Hugging Face, Model Card)",
+        "Modified MIT License allowing commercial use (source: Hugging Face, Model Card)"
+      ],
+      "known_limitations": [
+        "Max output tokens limited to 8K in standard mode, 16K for SWE-bench agentless (source: Hugging Face, Model Card)",
+        "No vision/multimodal support in K2 base \u2014 requires K2.5 for vision (source: Community documentation)",
+        "Extreme verbosity: 2-2.5x token usage compared to other models, impacting cost and latency (source: Skywork.ai analysis)",
+        "Initial vLLM tool calling only 18% success rate without custom parser fixes (source: vLLM Blog, debugging report)",
+        "Thinking mode adds 15-35% latency and 1.2-1.6x token overhead (source: Skywork.ai, Kimi K2 Thinking Limits)",
+        "Can overthink easy tasks in thinking mode, drift on long rule-heavy prompts (source: Skywork.ai analysis)",
+        "2-5% hallucination rate on highly specific uncited facts even in thinking mode (source: Skywork.ai analysis)",
+        "Reflex-grade model without long thinking \u2014 not designed for deep extended reasoning (source: Hugging Face, Model Card)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Standard OpenAI-compatible chat format with system/user/assistant roles. Default system prompt: 'You are Kimi, an AI assistant created by Moonshot AI.'",
+        "recommended_practices": [
+          "Set temperature to 0.6 for Instruct mode (source: Hugging Face, Model Card)",
+          "Use tool_choice='auto' for autonomous tool selection (source: GitHub, Kimi-K2 README)",
+          "OpenAI-compatible function calling format with tools parameter (source: Hugging Face, Model Card)",
+          "For Anthropic API compatibility, apply temperature mapping: real_temperature = request_temperature * 0.6 (source: Hugging Face, Model Card)",
+          "Provide task-specific system prompts rather than relying on defaults when special instructions are needed (source: GitHub, Kimi-K2 README)"
+        ],
+        "anti_patterns": [
+          "Do NOT set temperature above 0.6 for Instruct mode \u2014 model was optimized for this setting (source: Hugging Face, Model Card)",
+          "Do NOT use long rule-heavy prompts \u2014 model may drift from instructions (source: Skywork.ai analysis)",
+          "Do NOT assume live data retrieval without explicitly enabling browsing/tools \u2014 model produces confident but stale answers otherwise (source: Skywork.ai analysis)",
+          "Do NOT expect vision capabilities from K2 base \u2014 use K2.5 for multimodal tasks (source: Community documentation)"
+        ],
+        "sources": [
+          "https://huggingface.co/moonshotai/Kimi-K2-Instruct",
+          "https://github.com/MoonshotAI/Kimi-K2",
+          "https://platform.moonshot.ai/docs/guide/use-kimi-k2-thinking-model",
+          "https://blog.vllm.ai/2025/10/28/Kimi-K2-Accuracy.html"
+        ]
+      },
+      "task_strengths": [
+        "Agentic tool calling and multi-step workflows (Tau2 Retail 70.6% SOTA)",
+        "Code generation and debugging (LiveCodeBench 53.7% SOTA)",
+        "Mathematical reasoning (MATH-500 97.4%, AIME 69.6%)",
+        "Instruction following (IFEval 89.8% SOTA)",
+        "Cost-effective inference due to MoE sparse activation (32B of 1T active)"
+      ],
+      "cost_tier": "$$",
+      "adaptations": [
+        "Use temperature=0.6 strictly \u2014 this is the model's calibrated operating point",
+        "For Anthropic API integration, apply temperature mapping (real = request * 0.6)",
+        "Keep system prompts concise \u2014 model drifts on verbose rule-heavy instructions",
+        "Leverage native tool calling via OpenAI-compatible format for agentic workflows",
+        "For self-hosted deployment, use SGLang or vLLM with custom tool parsing logic"
+      ],
+      "benchmark": {
+        "quality": null,
+        "speed": null,
+        "adaptation_gain": null
+      },
+      "refrase_notes": "Kimi K2 is a cost-effective frontier model with exceptional agentic capabilities. The 1T total / 32B active MoE architecture delivers strong performance at low inference cost. Key differentiator: optimized specifically for tool calling and agentic workflows, not just chat. The 0.6 temperature requirement is strict \u2014 deviating significantly degrades output quality. Watch for verbosity (2-2.5x token usage vs peers) which can inflate costs despite low per-token pricing. The vLLM tool calling compatibility issues have been documented and fixed but indicate the model's tool call format requires careful parser configuration."
+    },
+    {
+      "id": "glm-47-flash",
+      "name": "GLM-4.7 Flash",
+      "provider": "Zhipu AI",
+      "family": "glm",
+      "official_url": "https://docs.z.ai/guides/llm/glm-4.7",
+      "context_window": 200000,
+      "max_output_tokens": 128000,
+      "pricing": {
+        "input_per_1m": 0.06,
+        "output_per_1m": 0.4,
+        "notes": "GLM-4.7-Flash is marketed as free with no rate limits on Zhipu's platform. Third-party providers charge $0.06/$0.40. Full GLM-4.7 starts at $10/month for premium tier. (source: pricepertoken.com, docs.z.ai)"
+      },
+      "key_capabilities": [
+        "200K token context window \u2014 one of the largest among open models (source: docs.z.ai, Official Documentation)",
+        "128K max output tokens \u2014 exceptional generation length (source: docs.z.ai, Official Documentation)",
+        "30B-A3B MoE architecture with ~3.6B active parameters per token (source: Hugging Face, Model Card)",
+        "Multi-head Latent Attention (MLA) architecture for efficiency (source: Pandaily, Zhipu announcement)",
+        "Strong coding benchmarks: SWE-bench Verified 73.8%, LiveCodeBench V6 84.9 SOTA (source: docs.z.ai, Official Documentation)",
+        "Multiple thinking modes: enabled/disabled, interleaved, retention-based, round-level (source: docs.z.ai, Official Documentation)",
+        "Function calling and tool invocation capabilities (source: docs.z.ai, Official Documentation)",
+        "Structured output support including JSON formats (source: docs.z.ai, Official Documentation)",
+        "Context caching for efficient long conversations (source: docs.z.ai, Official Documentation)",
+        "Bilingual English/Chinese with strong performance in both (source: Hugging Face, Model Card)"
+      ],
+      "known_limitations": [
+        "Text-only input/output \u2014 no multimodal/vision support in Flash variant (source: docs.z.ai, Official Documentation)",
+        "Drops reasoning chains under stress with complex multi-step workflows (source: WaveSpeedAI comparison)",
+        "Quality tapers with very long prompts or dense instructions (source: WaveSpeedAI comparison)",
+        "Not a flagship replacement for largest closed models on complex math/niche reasoning (source: WaveSpeedAI comparison)",
+        "Multi-file coordinated edits more prone to errors vs full GLM-4.7 (source: WaveSpeedAI comparison)",
+        "Agent workflows may stop mid-process requiring new session continuation (source: DataCamp tutorial)",
+        "Smaller active parameter count (3B) limits depth of reasoning vs dense models (source: Architecture analysis)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Standard OpenAI-compatible chat format with system/user/assistant roles. Supports multiple thinking mode configurations via API parameters.",
+        "recommended_practices": [
+          "Enable thinking mode for complex tasks; disable for simple queries to reduce latency (source: docs.z.ai, Official Documentation)",
+          "Use retention-based reasoning for long-term multi-turn conversations to improve cache efficiency (source: docs.z.ai, Official Documentation)",
+          "Leverage 'think before acting' mechanism in coding frameworks like Claude Code, Cline, Roo Code (source: docs.z.ai, Official Documentation)",
+          "Use task delivery workflow organizing development from requirements to implementation (source: docs.z.ai, Official Documentation)",
+          "Deploy with vLLM, SGLang, or Transformers for local inference (source: Hugging Face, Model Card)"
+        ],
+        "anti_patterns": [
+          "Do NOT use extremely long dense instructions in single prompt \u2014 quality degrades, use chunking instead (source: WaveSpeedAI comparison)",
+          "Do NOT rely on Flash for multi-file coordinated edits requiring tight consistency \u2014 use full GLM-4.7 instead (source: WaveSpeedAI comparison)",
+          "Do NOT assume stable agent execution for very long-running workflows \u2014 model may stop mid-process (source: DataCamp tutorial)"
+        ],
+        "sources": [
+          "https://docs.z.ai/guides/llm/glm-4.7",
+          "https://huggingface.co/zai-org/GLM-4.7-Flash",
+          "https://wavespeed.ai/blog/posts/glm-4-7-flash-vs-glm-4-7/",
+          "https://www.analyticsvidhya.com/blog/2026/01/glm-4-7-flash/"
+        ]
+      },
+      "task_strengths": [
+        "Code generation and coding agent workflows (SWE-bench 73.8%, LiveCodeBench 84.9)",
+        "Long-context processing with 200K window",
+        "Very long generation up to 128K output tokens",
+        "Chinese-English bilingual tasks",
+        "Local deployment on consumer hardware (43 tok/s on Apple M5)",
+        "Agentic coding with multi-step reasoning"
+      ],
+      "cost_tier": "$",
+      "adaptations": [
+        "Leverage the 200K context window and 128K output \u2014 this model can generate far longer outputs than most",
+        "Toggle thinking mode based on task complexity to optimize latency",
+        "Use retention-based reasoning mode for multi-turn conversations to maintain coherence",
+        "For coding tasks, use the model's native task delivery workflow pattern",
+        "Keep individual prompts focused rather than packing dense multi-file instructions"
+      ],
+      "benchmark": {
+        "quality": null,
+        "speed": null,
+        "adaptation_gain": null
+      },
+      "refrase_notes": "GLM-4.7 Flash is an exceptional value proposition: near-free pricing with strong coding benchmarks that rival much larger models. The 200K context / 128K output combination is rare and valuable for long-form generation tasks. The MLA architecture is a Chinese innovation distinct from standard GQA/MQA. Key differentiator from Western models: deeply optimized for Chinese + English bilingual use cases. The multiple thinking mode configurations (interleaved, retention-based, round-level) offer granular control not found in most models. Watch for the quality cliff on complex multi-step reasoning \u2014 the 3B active parameters limit depth despite strong benchmarks on individual tasks."
+    },
+    {
+      "id": "nemotron-30b",
+      "name": "Nemotron 3 Nano 30B-A3B",
+      "provider": "NVIDIA",
+      "family": "nemotron",
+      "official_url": "https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16",
+      "context_window": 1000000,
+      "max_output_tokens": 32768,
+      "pricing": {
+        "input_per_1m": 0.05,
+        "output_per_1m": 0.2,
+        "notes": "Reasoning variant: $0.06/$0.24. AWS Bedrock: $0.06/$0.24. Open-weight model \u2014 self-hosting is infrastructure cost only. (source: OpenRouter, pricepertoken.com)"
+      },
+      "key_capabilities": [
+        "1M token context window \u2014 among the largest available (source: Hugging Face, Model Card)",
+        "Hybrid Mamba-2 + Transformer MoE architecture: 52 layers (23 Mamba-2, 23 MoE, 6 GQA Attention) (source: Hugging Face, Model Card)",
+        "30B total / 3.5B active parameters \u2014 extremely efficient inference (source: Hugging Face, Model Card)",
+        "128 routed experts + 1 shared expert per MoE layer, 6 activated per token (source: Hugging Face, Model Card)",
+        "Configurable reasoning with thinking budget control (source: Hugging Face, Model Card)",
+        "Strong mathematical reasoning: AIME 2025 89.1% without tools, 99.2% with tools (source: Hugging Face, Model Card)",
+        "Code generation: LiveCodeBench v6 68.3% (source: Hugging Face, Model Card)",
+        "Long context: RULER-100@1M 86.3% (source: Hugging Face, Model Card)",
+        "20 natural languages + 43 programming languages (source: Hugging Face, Model Card)",
+        "3.3x higher inference throughput than Qwen3-30B-A3B on single H200 (source: NVIDIA, Technical Report)",
+        "Trained on 25 trillion tokens including 33% synthetic data (source: Hugging Face, Model Card)",
+        "NVIDIA Nemotron Open Model License \u2014 commercial use allowed (source: Hugging Face, Model Card)"
+      ],
+      "known_limitations": [
+        "General knowledge (MMLU-Pro 78.3%) slightly behind Qwen3-30B (80.9%) \u2014 hybrid architecture trades breadth for reasoning depth (source: Medium, Technical Review)",
+        "Does not excel at complex prompts for entire online applications (source: Community testing)",
+        "Reasoning mode off decreases accuracy on harder prompts (source: Hugging Face, Model Card)",
+        "1M context requires very high VRAM (~120GB+ for BF16) (source: Hugging Face, Model Card)",
+        "Default config uses 256K context \u2014 1M requires VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 flag (source: Hugging Face, Model Card)",
+        "Fine-tuning the router layer is not recommended (source: Community testing)",
+        "Best performance in English \u2014 other languages have lower performance (source: Hugging Face, Model Card)",
+        "Requires trust_remote_code=True for Transformers inference due to hybrid architecture (source: Hugging Face, Model Card)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Standard OpenAI-compatible chat format with system/user/assistant roles. Supports enable_thinking flag in chat template for reasoning mode toggle.",
+        "recommended_practices": [
+          "Use temperature=1.0 and top_p=1.0 for reasoning tasks (source: Hugging Face, Model Card)",
+          "Use temperature=0.6 and top_p=0.95 for tool calling (source: Hugging Face, Model Card)",
+          "Use greedy decoding (do_sample=False) when reasoning is disabled (source: Hugging Face, Model Card)",
+          "Control reasoning budget via ThinkingBudgetClient pattern to limit thinking tokens (source: Hugging Face, Model Card)",
+          "Use Qwen3 coder tool call parser with vLLM for tool calling (source: Hugging Face, Model Card)",
+          "Maintain at least 75% reasoning and 25% non-reasoning examples when fine-tuning (source: Community testing)"
+        ],
+        "anti_patterns": [
+          "Do NOT use low temperature for reasoning tasks \u2014 model is calibrated for temperature=1.0 (source: Hugging Face, Model Card)",
+          "Do NOT fine-tune the router layer \u2014 it degrades expert selection (source: Community testing)",
+          "Do NOT disable reasoning for complex tasks requiring multi-step logic \u2014 accuracy drops significantly (source: Hugging Face, Model Card)",
+          "Do NOT exceed 256K context without explicitly enabling long model length \u2014 default config will truncate (source: Hugging Face, Model Card)"
+        ],
+        "sources": [
+          "https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16",
+          "https://build.nvidia.com/nvidia/nemotron-3-nano-30b-a3b/modelcard",
+          "https://huggingface.co/blog/nvidia/nemotron-3-nano-efficient-open-intelligent-models",
+          "https://research.nvidia.com/labs/nemotron/Nemotron-3/"
+        ]
+      },
+      "task_strengths": [
+        "Mathematical reasoning with tool use (AIME 2025: 99.2% with tools)",
+        "Long-context processing up to 1M tokens (RULER-100@1M: 86.3%)",
+        "Code generation (LiveCodeBench 68.3%)",
+        "Efficient inference \u2014 3.3x throughput vs comparable models",
+        "Agentic AI systems with configurable reasoning depth",
+        "Multilingual support across 20 languages and 43 programming languages"
+      ],
+      "cost_tier": "$",
+      "adaptations": [
+        "Unique hybrid Mamba-2 + Transformer architecture requires trust_remote_code \u2014 ensure deployment framework supports it",
+        "Use the ThinkingBudgetClient pattern to control reasoning token allocation per request",
+        "Toggle reasoning mode based on task: enable for math/code, disable for simple Q&A",
+        "For 1M context, explicitly configure with VLLM_ALLOW_LONG_MAX_MODEL_LEN=1",
+        "Use different temperature settings by task type: 1.0 for reasoning, 0.6 for tools, 0.0 for simple"
+      ],
+      "benchmark": {
+        "quality": null,
+        "speed": null,
+        "adaptation_gain": null
+      },
+      "refrase_notes": "Nemotron 3 Nano is NVIDIA's answer to efficient agentic AI. The hybrid Mamba-2 + Transformer MoE architecture is unique \u2014 combining linear-time sequence modeling (Mamba) with sparse expert activation (MoE) and selective attention (GQA). This gives it the 1M context window that pure Transformer models struggle with at this parameter count. The 3.3x throughput advantage over Qwen3-30B is significant for production deployments. The ThinkingBudgetClient pattern for controlling reasoning depth is a novel inference-time optimization. Trained on 25T tokens (33% synthetic) \u2014 one of the largest training runs for a model this size. Released December 2025."
+    },
+    {
+      "id": "minimax-m2",
+      "name": "MiniMax M2",
+      "provider": "MiniMax",
+      "family": "minimax",
+      "official_url": "https://github.com/MiniMax-AI/MiniMax-M2",
+      "context_window": 200000,
+      "max_output_tokens": 128000,
+      "pricing": {
+        "input_per_1m": 0.26,
+        "output_per_1m": 1.0,
+        "notes": "Currently free for limited time on MiniMax platform. Third-party pricing: $0.26/$1.00. Successor M2.1 and M2.5 available with similar pricing. (source: pricepertoken.com, llm-stats.com)"
+      },
+      "key_capabilities": [
+        "230B total parameters with only 10B active \u2014 extremely compact MoE (source: GitHub, README)",
+        "Interleaved thinking with <think>...</think> tags for chain-of-thought reasoning (source: GitHub, README)",
+        "Strong coding: SWE-bench Verified 69.4%, LiveCodeBench 83%, Terminal-Bench 46.3% (source: GitHub, README)",
+        "General intelligence: MMLU-Pro 82%, BrowseComp 44% (source: GitHub, README)",
+        "Native tool calling with XML format <minimax:tool_call> tags (source: Hugging Face, Tool Calling Guide)",
+        "Plans and executes complex long-horizon toolchains across shell, browser, retrieval, and code runners (source: GitHub, README)",
+        "Multi-file editing and code-run-fix loops (source: GitHub, README)",
+        "200K context window with 128K output capacity (source: MiniMax API Docs)",
+        "MIT License \u2014 fully open source (source: GitHub, README)"
+      ],
+      "known_limitations": [
+        "Interleaved thinking content in <think> tags must be preserved in conversation history \u2014 removing them degrades performance (source: GitHub, README)",
+        "10B active parameters may limit depth of reasoning on highly complex tasks vs larger dense models (source: Architecture analysis)",
+        "Training details not publicly disclosed (source: GitHub, README \u2014 absent from documentation)",
+        "Newer M2.1 and M2.5 versions available \u2014 M2 may receive fewer updates (source: MiniMax, Product Timeline)",
+        "XML-based tool calling format (<minimax:tool_call>) requires custom parsing if not using vLLM/SGLang built-in parsers (source: Hugging Face, Tool Calling Guide)",
+        "Released October 2025 \u2014 younger model with less community ecosystem than established alternatives (source: llm-stats.com)"
+      ],
+      "prompt_patterns": {
+        "system_instruction_format": "Standard OpenAI-compatible chat format. Default system prompt: 'You are a helpful assistant. Your name is MiniMax-M2 and is built by MiniMax.' Tool definitions injected as structured text with XML format instructions.",
+        "recommended_practices": [
+          "Use temperature=1.0, top_p=0.95, top_k=40 for best performance (source: GitHub, README)",
+          "Preserve <think>...</think> tags in conversation history \u2014 removing them degrades multi-turn performance (source: GitHub, README)",
+          "Give the model a role, constraints, and acceptance tests in system prompt \u2014 structure beats cleverness (source: Skywork.ai, Prompt Optimization)",
+          "Let the model think in steps and invite self-critique for complex tasks (source: Skywork.ai, Prompt Optimization)",
+          "Use vLLM or SGLang with built-in parsers for automatic tool call handling (source: Hugging Face, Tool Calling Guide)",
+          "For manual tool call parsing, use XML regex to extract <minimax:tool_call> blocks (source: Hugging Face, Tool Calling Guide)",
+          "Return tool results with role='tool' and structured content array format (source: Hugging Face, Tool Calling Guide)"
+        ],
+        "anti_patterns": [
+          "Do NOT strip <think>...</think> tags from conversation history \u2014 model relies on them for coherent multi-turn reasoning (source: GitHub, README)",
+          "Do NOT parse tool calls without schema type information \u2014 parameters need type-aware conversion (source: Hugging Face, Tool Calling Guide)",
+          "Do NOT skip adding tool results back to conversation history \u2014 breaks iterative tool calling (source: Hugging Face, Tool Calling Guide)",
+          "Do NOT assume string encoding for all tool call parameters \u2014 use schema type definitions for proper conversion (source: Hugging Face, Tool Calling Guide)"
+        ],
+        "sources": [
+          "https://github.com/MiniMax-AI/MiniMax-M2",
+          "https://huggingface.co/MiniMaxAI/MiniMax-M2/blob/main/docs/tool_calling_guide.md",
+          "https://platform.minimax.io/docs/guides/models-intro",
+          "https://skywork.ai/blog/ai-agent/minimax-m2-prompt-optimization-5-techniques-2025/"
+        ]
+      },
+      "task_strengths": [
+        "Coding and development workflows (SWE-bench 69.4%, LiveCodeBench 83%)",
+        "Agentic multi-step toolchains across diverse environments",
+        "Long-form generation with 128K output capacity",
+        "Cost-effective inference due to sparse 10B activation",
+        "Terminal and CLI-based task execution (Terminal-Bench 46.3%)"
+      ],
+      "cost_tier": "$",
+      "adaptations": [
+        "Always preserve <think> tags in conversation history for multi-turn interactions",
+        "Use structured system prompts: role + constraints + acceptance tests pattern",
+        "Tool calling uses XML format (<minimax:tool_call>) \u2014 different from OpenAI JSON format",
+        "Set temperature to 1.0 (not lower) \u2014 model is calibrated for this setting",
+        "For self-hosted deployment, use SGLang or vLLM with MiniMax-specific tool call parsers"
+      ],
+      "benchmark": {
+        "quality": null,
+        "speed": null,
+        "adaptation_gain": null
+      },
+      "refrase_notes": "MiniMax M2 is a Chinese-origin model optimized for coding and agentic workflows. The 230B/10B MoE architecture is one of the most aggressively sparse designs \u2014 only 4.3% of parameters active per token. The interleaved thinking pattern with <think> tags is a key differentiator \u2014 unlike models with separate thinking modes, M2 weaves reasoning into generation naturally. The XML-based tool calling format (<minimax:tool_call>) is unique and requires specific parser support. The model's MIT license and competitive benchmarks make it attractive for open-source deployments. Successors M2.1 (enhanced multilingual coding) and M2.5 (agent swarm) build on this base. The 200K context / 128K output combination matches GLM-4.7 Flash and exceeds most competitors."
+    }
+  ],
+  "_schema_version": "1.0",
+  "_description": "Authoritative model documentation with cited sources. Every claim traces to official provider docs or Refrase eval data. Generated and maintained via the model-research skill.",
+  "_last_updated": "2026-03-17"
+}
