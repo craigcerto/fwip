@@ -18,7 +18,7 @@
   <a href="https://pypi.org/project/refrase/"><img src="https://img.shields.io/pypi/v/refrase" alt="PyPI" /></a>
   <a href="https://www.npmjs.com/package/refrase"><img src="https://img.shields.io/npm/v/refrase" alt="npm" /></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License" /></a>
-  <a href="https://github.com/craigcerto/fwip/actions/workflows/test.yml"><img src="https://github.com/craigcerto/fwip/actions/workflows/test.yml/badge.svg" alt="Tests" /></a>
+  <a href="https://github.com/craigcerto/refrase/actions/workflows/test.yml"><img src="https://github.com/craigcerto/refrase/actions/workflows/test.yml/badge.svg" alt="Tests" /></a>
   <a href="https://refrase.cc"><img src="https://img.shields.io/badge/website-refrase.cc-7c3aed" alt="Website" /></a>
 </p>
 
@@ -369,14 +369,14 @@ Config-driven. Every model's rules live in a JSON file, not code:
 
 Adding a model is just editing JSON. No code changes. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-We also welcome new transforms, evidence citations, and benchmark data. Check [open issues](https://github.com/craigcerto/fwip/issues) for good first contributions.
+We also welcome new transforms, evidence citations, and benchmark data. Check [open issues](https://github.com/craigcerto/refrase/issues) for good first contributions.
 
 ## Star History
 
 <!-- Replace with actual chart once we have stars -->
-<!-- [![Star History Chart](https://api.star-history.com/svg?repos=craigcerto/fwip&type=Date)](https://star-history.com/#craigcerto/fwip&Date) -->
+<!-- [![Star History Chart](https://api.star-history.com/svg?repos=craigcerto/refrase&type=Date)](https://star-history.com/#craigcerto/refrase&Date) -->
 
-If Refrase saves you time or makes your prompts better, **[give it a ⭐](https://github.com/craigcerto/fwip)**. It helps others find the project.
+If Refrase saves you time or makes your prompts better, **[give it a ⭐](https://github.com/craigcerto/refrase)**. It helps others find the project.
 
 ## License
 

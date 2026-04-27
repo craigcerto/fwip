@@ -33,7 +33,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/craigcerto/fwip.git",
+    "url": "https://github.com/craigcerto/refrase.git",
     "directory": "typescript"
   },
   "homepage": "https://refrase.cc",

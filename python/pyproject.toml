@@ -28,9 +28,9 @@ classifiers = [
 [project.urls]
 Homepage = "https://refrase.cc"
 Documentation = "https://refrase.cc/docs/python"
-Repository = "https://github.com/craigcerto/fwip"
-Issues = "https://github.com/craigcerto/fwip/issues"
-Changelog = "https://github.com/craigcerto/fwip/blob/main/CHANGELOG.md"
+Repository = "https://github.com/craigcerto/refrase"
+Issues = "https://github.com/craigcerto/refrase/issues"
+Changelog = "https://github.com/craigcerto/refrase/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["refrase"]
