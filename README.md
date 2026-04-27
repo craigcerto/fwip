@@ -5,13 +5,9 @@
 <h1 align="center">Refrase</h1>
 
 <p align="center">
-  <strong>One prompt doesn't fit all models. Refrase fixes that.</strong>
+  <strong>Deterministic prompt transforms for 38 models, sourced from the official documentation of every provider.</strong>
   <br />
-  <em>Restructures your prompts for the model you're actually using — backed by research across 46 models.</em>
-</p>
-
-<p align="center">
-  <a href="https://refrase.cc/adapt"><strong>Try it live →</strong></a>
+  <em>A small library that restructures your prompts the way each model was trained to read them. No LLM, no API calls, no latency.</em>
 </p>
 
 <p align="center">
@@ -23,30 +19,38 @@
 </p>
 
 <p align="center">
-  <a href="https://refrase.cc">Website</a> · <a href="https://refrase.cc/adapt">Adapter</a> · <a href="https://refrase.cc/build">Prompt Builder</a> · <a href="https://refrase.cc/research">Research</a> · <a href="https://refrase.cc/docs/extension">Extension</a>
+  <a href="https://refrase.cc">Website</a> · <a href="https://refrase.cc/enhance">Hosted enhancer</a> · <a href="https://refrase.cc/research">Research</a> · <a href="https://refrase.cc/docs/extension">Extension</a>
 </p>
 
 ---
 
+> ### 🟣 Library vs. hosted product
+>
+> This repo is the **open-source library**: deterministic, runs locally, no network calls. It applies prompt transforms based on each provider's official documentation.
+>
+> [**refrase.cc**](https://refrase.cc) is the **hosted product**: an LLM-powered enhancer (Claude Haiku on AWS Bedrock) with a Quick mode, a multi-turn Guided mode, and [paired-A/B research](https://refrase.cc/research) across three frontier models. The two are complementary — use the library when you want a free, deterministic, instant transform; use the hosted product when you want a model to *rewrite* your prompt.
+>
+> A v1.0 of this package will ship as a thin client for the hosted API. Until then, v0.x stays as the deterministic library.
+
 <p align="center">
-  <a href="https://refrase.cc/adapt">
-    <img src="assets/demo.gif" alt="Refrase — watch a prompt get optimized for Claude Sonnet, then switch between GPT-4o, Gemini Pro, and Llama" width="700" />
+  <a href="https://refrase.cc/enhance">
+    <img src="assets/demo.gif" alt="Refrase — same prompt, different optimizations for Claude, GPT-4o, Gemini Pro, and Llama" width="700" />
   </a>
 </p>
 
-## What is Refrase?
+## What this library does
 
-Refrase is an open-source library that **restructures your prompts for the specific model you're targeting**. No LLM. No API calls. No latency. Just better prompts, instantly.
+Every model is trained to follow prompts a little differently. Claude was post-trained on XML-tagged instructions. Qwen3 surfaces thinking-mode markers. Mistral Magistral emits `[THINK]` and `[TOOL_CALLS]` markers that break downstream JSON parsers. Gemini 3 degrades quality below `temperature=1.0`.
 
-Every model processes prompts differently. Claude was trained on XML. Qwen3 needs thinking-mode prefixes. Magistral emits markers that break your JSON. We studied the official documentation from every major provider and ran a [46-model empirical evaluation](https://refrase.cc/research) to figure out exactly what each model needs — then put it in a library you can install in 10 seconds.
+Refrase reads the *official prompt-engineering documentation* from every major provider, distills the rules into 11 JSON config files, and applies them as 14 composable transforms. Same prompt in, model-appropriate prompt out — every rule has a citation back to the source it came from.
 
 ```bash
 npm install refrase     # or: pip install refrase
 ```
 
-## See It In Action
+## See it in action
 
-Same prompt. Three models. Three completely different optimizations.
+Same prompt. Three models. Three completely different transforms.
 
 **Your prompt:**
 ```
@@ -128,20 +132,20 @@ CRITICAL OUTPUT RULES:
 </table>
 
 <details>
-<summary><strong>More examples: DeepSeek, Nemotron, Kimi, GLM...</strong></summary>
+<summary><strong>More examples: DeepSeek, Nemotron, Kimi, GLM…</strong></summary>
 
 | Model | What Refrase does | Why |
 |---|---|---|
 | **DeepSeek V3** | Adds self-verification checklist | Tends to drop required fields ([docs](https://api-docs.deepseek.com/guides/json_mode)) |
 | **Nemotron 9B** | `/think` prefix + simplified to 3 steps + strong JSON | Small model needs thinking mode + concise prompts |
 | **Kimi K2** | Source grounding + English enforcement | K2 always reasons — needs explicit grounding. Multilingual model. |
-| **GLM 4.7 Flash** | Simplified + nested object fix + English | Nested object serialization bug + bilingual model |
+| **GLM 4.7 Flash** | Simplified + nested-object fix + English | Nested object serialization bug + bilingual model |
 | **Llama 3.1 8B** | Simplified + grounding rules | Small model prone to hallucination |
 | **MiniMax M2** | Contract-style self-verification | Responds well to explicit verification checklists |
 
 </details>
 
-## Quick Start
+## Quick start
 
 ```typescript
 import { adapt } from "refrase";
@@ -152,9 +156,9 @@ const result = adapt({
   task: "extraction",
 });
 
-result.system;   // → Adapted prompt (XML tags, thinking prefixes, etc.)
-result.changes;  // → What changed and why, with evidence citations
-result.apiHints; // → Recommended API params (temperature, max_tokens, etc.)
+result.system;   // → adapted prompt (XML tags, thinking prefixes, etc.)
+result.changes;  // → what changed and why, with evidence citations
+result.apiHints; // → recommended API params (temperature, max_tokens, etc.)
 ```
 
 ```python
@@ -173,16 +177,16 @@ result = refrase.adapt(
 
 | | Feature | Description |
 |---|---|---|
-| 🔬 | **Research-backed** | Every rule traces to official docs or our 46-model benchmark. No guessing. |
-| ⚡ | **Instant** | Deterministic transforms, no LLM calls. Under 1ms. |
-| 🏷️ | **Honestly labeled** | Each change tagged `model_specific`, `best_practice`, or `compensation`. |
+| 📄 | **Sourced from docs** | Every rule has a verifiable citation to the provider's official prompt-engineering documentation. |
+| ⚡ | **Instant** | Pure functions, no LLM calls, no network. Sub-millisecond on a laptop. |
+| 🏷️ | **Honestly labeled** | Each change is tagged `model_specific`, `best_practice`, or `compensation`. |
 | 📋 | **API hints** | Tells you what API params to set (temperature, reasoning_effort, etc.) |
-| 🔌 | **38 models** | 11 families: Claude, GPT, Gemini, Qwen, DeepSeek, Mistral, Llama, Kimi, GLM, Nemotron, MiniMax |
+| 🔌 | **38 models** | 11 families: Claude, OpenAI, Gemini, Qwen, DeepSeek, Mistral, Llama, Kimi, GLM, Nemotron, MiniMax. |
 | 🧩 | **Extensible** | Add models by editing JSON. Register custom families at runtime. |
-| 🌐 | **Cross-platform** | TypeScript + Python with identical output. Verified across 190 test cases. |
+| 🌐 | **Cross-platform** | TypeScript + Python with identical output, verified by parity tests. |
 | 🖥️ | **MCP server** | Works in Claude Desktop, Cursor, and any MCP client. |
 
-## Use It Everywhere
+## Use it everywhere
 
 <table>
 <tr>
@@ -203,9 +207,7 @@ pip install refrase
 
 ### 🌐 On the web
 
-**[refrase.cc/adapt](https://refrase.cc/adapt)** — paste, pick a model, see the result. No signup.
-
-**[refrase.cc/build](https://refrase.cc/build)** — describe what you want in plain English. AI builds the optimal prompt.
+**[refrase.cc/enhance](https://refrase.cc/enhance)** — the hosted, LLM-powered enhancer. Quick mode rewrites your prompt; Guided mode asks targeted clarifying questions.
 
 </td>
 </tr>
@@ -243,7 +245,7 @@ Auto-detects ChatGPT, Claude, Gemini. Optimizes prompts in any text field.
 </tr>
 </table>
 
-## 38 Models Supported
+## 38 models supported
 
 | Family | Provider | Models |
 |---|---|---|
@@ -261,18 +263,30 @@ Auto-detects ChatGPT, Claude, Gemini. Optimizes prompts in any text field.
 
 > **Adding a model = editing a JSON file.** No code changes. [See how →](CONTRIBUTING.md)
 
-## The Research
+## Where the rules come from
 
-We didn't guess at what works. We tested it.
+Every transform in this library traces back to official, citable documentation:
 
-- 📄 Read the official prompt engineering docs from **every provider** — Anthropic, OpenAI, Google, Meta, Alibaba, DeepSeek, Mistral, Moonshot, Z.AI, NVIDIA, MiniMax
-- 🧪 Tested **46 model configurations** across **368 scenarios** with a production evaluation pipeline
-- 👥 **Two independent judges** (Claude Sonnet + Haiku) with **Cohen's kappa = 0.94**
-- 📊 Three scoring layers: service-specific quality (L1), universal rubric (L2), binary hiring decision (L3)
+- **Anthropic** — [Use XML tags](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags), [system prompts](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/system-prompts)
+- **OpenAI** — [Prompt engineering guide](https://platform.openai.com/docs/guides/prompt-engineering), reasoning model API docs
+- **Google** — Gemini prompt engineering best practices, temperature behaviour notes
+- **Alibaba (Qwen)** — [Qwen3-32B model card](https://huggingface.co/Qwen/Qwen3-32B) for thinking-mode markers and JSON guidance
+- **DeepSeek** — [JSON mode guide](https://api-docs.deepseek.com/guides/json_mode)
+- **Mistral** — [Native reasoning docs](https://docs.mistral.ai/capabilities/reasoning/native) for marker behaviour
+- **Moonshot AI**, **NVIDIA**, **Z.AI**, **Meta**, **MiniMax** — provider docs and model cards
 
-Every rule in this library has a verifiable source — an official doc URL or benchmark data.
+If a rule doesn't have a verifiable source, it doesn't ship.
 
-**[Read the full methodology →](https://refrase.cc/research)**
+## Want LLM-powered enhancement instead?
+
+If you'd rather have a model *rewrite* your prompt — taking a half-thought "write me an email about a delay" and turning it into a fully specified prompt with role, instructions, output format, and tone — that's what the hosted product at **[refrase.cc](https://refrase.cc)** does. It uses Claude Haiku 4.5 on AWS Bedrock, has Quick and multi-turn Guided modes, and is validated by paired-A/B research on three frontier models:
+
+- **Claude Sonnet 4.6:** +15.4% quality (8/8 scenarios, p&lt;0.01)
+- **Mistral Large 3:** +44.7% (6/8 wins, p≈0.06)
+- **DeepSeek V3.2:** +4.7% (5/8 wins, n.s.)
+- **Combined:** 19 of 24 paired comparisons favored the enhanced prompt (p≈0.003)
+
+Full methodology, raw data, and limitations: **[refrase.cc/research](https://refrase.cc/research)**.
 
 ## API
 
@@ -345,7 +359,7 @@ registerFamily({
 
 </details>
 
-## How It Works
+## How it works
 
 Config-driven. Every model's rules live in a JSON file, not code:
 
@@ -363,18 +377,15 @@ Config-driven. Every model's rules live in a JSON file, not code:
 }
 ```
 
-14 composable transforms are mixed and matched per model. The engine reads the config, matches rules to your model + task, and applies transforms in sequence. Both TypeScript and Python read the same configs — verified identical across 190 model/task combinations.
+14 composable transforms get mixed and matched per model. The engine reads the config, matches rules to your model + task, and applies transforms in sequence. Both TypeScript and Python read the same configs.
 
 ## Contributing
 
 Adding a model is just editing JSON. No code changes. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-We also welcome new transforms, evidence citations, and benchmark data. Check [open issues](https://github.com/craigcerto/refrase/issues) for good first contributions.
+We also welcome new transforms, evidence citations, and bug reports. Check [open issues](https://github.com/craigcerto/refrase/issues) for good first contributions.
 
-## Star History
-
-<!-- Replace with actual chart once we have stars -->
-<!-- [![Star History Chart](https://api.star-history.com/svg?repos=craigcerto/refrase&type=Date)](https://star-history.com/#craigcerto/refrase&Date) -->
+## Star history
 
 If Refrase saves you time or makes your prompts better, **[give it a ⭐](https://github.com/craigcerto/refrase)**. It helps others find the project.
 

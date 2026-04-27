@@ -20,7 +20,7 @@ Every claim traces to a cited source (provider docs, system cards, or Refrase ev
 
 If you're adding a new model or correcting/extending an existing one, edit this file and open a pull request. After merging:
 
-1. The fwip-web repo's `lambda/adapter/model-cards.json` and `src/data/model-cards.json` should be re-synced (manual copy for now; a CI sync is on the roadmap).
+1. The refrase-web repo's `lambda/adapter/model-cards.json` and `src/data/model-cards.json` should be re-synced (manual copy for now; a CI sync is on the roadmap).
 2. The Adapter Lambda is redeployed via `lambda/adapter/deploy.sh` so the new card is picked up.
 
 ## Schema

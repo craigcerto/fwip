@@ -1,4 +1,4 @@
-"""Shared test fixtures for Fwip tests."""
+"""Shared test fixtures for Refrase tests."""
 
 import pytest
 

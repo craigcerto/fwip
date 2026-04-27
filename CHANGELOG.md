@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Notes
+- This repository hosts the **deterministic** Refrase library (no LLM calls). The hosted, LLM-powered enhancer at [refrase.cc](https://refrase.cc) is a separate product. v0.x of this package is the deterministic library; **v1.0 is planned as a thin client for the hosted API** (per-key auth, billing, etc.) and will replace the current `adapt()` surface. v0.x will continue to receive bug-fix releases until v1.0 ships.
+- README repositioned to clearly distinguish the open-source library from the hosted product. Stale marketing claims (carried over from earlier drafts of refrase.cc) were removed; remaining numbers refer only to what this library actually does (38 model variants across 11 families, 14 transforms).
+
 ## [0.2.0] - 2026-04-08
 
 ### Changed
