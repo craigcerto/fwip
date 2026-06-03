@@ -3,7 +3,9 @@
   "provider": "OpenAI",
   "docs_url": "https://platform.openai.com/docs/guides/prompt-engineering",
   "models": {
-    "gpt-4o": { "name": "GPT-4o", "variant": "4o", "tier": "flagship" },
+    "gpt-5.5": { "name": "GPT-5.5", "variant": "gpt-5.5", "tier": "flagship" },
+    "gpt-5.5-pro": { "name": "GPT-5.5 Pro", "variant": "gpt-5.5", "tier": "premium" },
+    "gpt-4o": { "name": "GPT-4o", "variant": "4o", "tier": "legacy" },
     "gpt-4o-mini": { "name": "GPT-4o Mini", "variant": "mini", "tier": "fast" },
     "gpt-4": { "name": "GPT-4", "variant": "4", "tier": "legacy" },
     "o1": { "name": "o1", "variant": "o1", "tier": "reasoning" },

@@ -3,8 +3,10 @@
   "provider": "Google",
   "docs_url": "https://ai.google.dev/gemini-api/docs/prompting-strategies",
   "models": {
-    "gemini-pro": { "name": "Gemini 2.5 Pro", "variant": "pro", "tier": "flagship" },
-    "gemini-flash": { "name": "Gemini 2.5 Flash", "variant": "flash", "tier": "fast" },
+    "gemini-3.1-pro": { "name": "Gemini 3.1 Pro", "variant": "pro", "tier": "flagship" },
+    "gemini-3.5-flash": { "name": "Gemini 3.5 Flash", "variant": "flash", "tier": "fast" },
+    "gemini-pro": { "name": "Gemini 2.5 Pro", "variant": "pro", "tier": "legacy" },
+    "gemini-flash": { "name": "Gemini 2.5 Flash", "variant": "flash", "tier": "legacy" },
     "gemini-ultra": { "name": "Gemini Ultra", "variant": "ultra", "tier": "premium" }
   },
   "rules": [],

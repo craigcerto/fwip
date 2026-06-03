@@ -4,7 +4,7 @@
   "docs_url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering",
   "models": {
     "claude-sonnet": { "name": "Claude Sonnet 4.6", "variant": "sonnet", "tier": "flagship" },
-    "claude-opus": { "name": "Claude Opus 4.6", "variant": "opus", "tier": "premium" },
+    "claude-opus": { "name": "Claude Opus 4.8", "variant": "opus", "tier": "premium" },
     "claude-haiku": { "name": "Claude Haiku 4.5", "variant": "haiku", "tier": "fast" }
   },
   "rules": [
