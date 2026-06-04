@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/craigcerto/refrase/main/assets/refrase-logo.png" alt="Refrase logo" width="120" />
+  <a href="https://refrase.cc">
+    <img src="https://raw.githubusercontent.com/craigcerto/refrase/main/assets/refrase-logo.png" alt="Refrase logo" width="120" />
+  </a>
 </p>
 
 <h1 align="center">Refrase</h1>
@@ -9,13 +11,17 @@
 </p>
 
 <p align="center">
-  <a href="https://refrase.cc">Website</a>
+  <a href="https://refrase.cc"><strong>refrase.cc</strong></a>
   ·
   <a href="https://refrase.cc/enhance">Hosted app</a>
   ·
   <a href="https://www.npmjs.com/package/refrase">npm</a>
   ·
   <a href="https://pypi.org/project/refrase/">PyPI</a>
+</p>
+
+<p align="center">
+  Looking for the product? Start at <a href="https://refrase.cc">refrase.cc</a>.
 </p>
 
 ## What This Is
